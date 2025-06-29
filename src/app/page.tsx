@@ -1,103 +1,254 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import '../styles/pages/Home.css';
+import dropicLogo from '../../public/images/dropic-logo.png';
+import demoImage1 from '../../public/images/demo/demo-image-1.jpg';
+import demoImage2 from '../../public/images/demo/demo-image-2.jpg';
+import demoImage3 from '../../public/images/demo/demo-image-3.jpg';
+import demoImage4 from '../../public/images/demo/demo-image-4.jpg';
+import demoImage5 from '../../public/images/demo/demo-image-5.jpg';
+import demoImage6 from '../../public/images/demo/demo-image-6.jpg';
+
+const Home = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const router = useRouter();
+
+  const demoImages = [
+    demoImage1,
+    demoImage2,
+    demoImage3,
+    demoImage4,
+    demoImage5,
+    demoImage6
+  ];
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('userToken');
+      setIsLoggedIn(!!token);
+    };
+
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = entry.target as HTMLElement;
+          target.style.opacity = '1';
+          target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.feature-card').forEach(card => {
+      observer.observe(card);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const updatePage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePrevClick = () => {
+    const newPage = currentPage > 0 ? currentPage - 1 : demoImages.length - 1;
+    updatePage(newPage);
+  };
+
+  const handleNextClick = () => {
+    const newPage = currentPage < demoImages.length - 1 ? currentPage + 1 : 0;
+    updatePage(newPage);
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <>
+      <header className="header">
+        <nav className="nav">
+          <div className="brand-container">
+            <Image src={dropicLogo} alt="Dropic Logo" className="logo-image" width={40} height={40} />
+            <span className="brand-text">Dropic</span>
+          </div>
+          <div className="nav-buttons">
+            {isLoggedIn ? (
+              <a href="/profile" className="btn btn-outline">Мои альбомы</a>
+            ) : (
+              <button
+                onClick={() => router.push('/auth')}
+                className="btn btn-primary"
+              >
+                Войти
+              </button>
+            )}
+          </div>
+        </nav>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <section className="hero">
+        <div className="hero-content">
+          <h1>Создавайте магические фотоальбомы</h1>
+          <p>Превратите ваши воспоминания в красивые цифровые альбомы и делитесь ими с друзьями и близкими</p>
+          <div className="hero-cta">
+            {isLoggedIn ? (
+              <button
+                onClick={() => router.push('/albums/create')}
+                className="btn btn-primary btn-hero"
+              >
+                Создать новый альбом
+              </button>
+            ) : (
+              <button
+                onClick={() => router.push('/auth')}
+                className="btn btn-primary btn-hero"
+              >
+                Начать бесплатно
+              </button>
+            )}
+            <a href="#demo" className="btn btn-secondary btn-hero">Посмотреть примеры</a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      <section className="features">
+        <div className="container">
+          <h2 className="section-title">Почему выбирают Dropic?</h2>
+          <p className="section-subtitle">Мощные инструменты для создания незабываемых фотоальбомов</p>
+          
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-icon">📸</div>
+              <h3>Простое создание</h3>
+              <p>Загружайте фото одним кликом и создавайте альбомы за считанные минуты</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🎨</div>
+              <h3>Красивые темы</h3>
+              <p>Выбирайте из множества профессиональных шаблонов и настраивайте под себя</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">👥</div>
+              <h3>Совместная работа</h3>
+              <p>Приглашайте друзей добавлять фото и создавайте альбомы вместе</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🔗</div>
+              <h3>Легкий доступ</h3>
+              <p>Делитесь альбомами через ссылку или встраивайте на свой сайт</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">☁️</div>
+              <h3>Облачное хранение</h3>
+              <p>Ваши фото надежно сохранены и доступны с любого устройства</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">⚡</div>
+              <h3>Быстрая загрузка</h3>
+              <p>Оптимизированные альбомы загружаются мгновенно на любой скорости</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="demo" className="demo">
+        <div className="album-container">
+          <h1 className="section-title">Примеры альбомов</h1>          
+          <div className="photo-viewer">
+            <div className="photo-container">
+              <Image 
+                src={demoImages[currentPage]} 
+                alt={`Демо изображение ${currentPage + 1}`} 
+                className="demo-image"
+                layout="fill"
+                objectFit="contain"
+              />
+            </div>
+            
+            <button className="nav-button nav-prev" onClick={handlePrevClick}>‹</button>
+            <button className="nav-button nav-next" onClick={handleNextClick}>›</button>
+          </div>
+
+          <div className="pagination">
+            {demoImages.map((_, index) => (
+              <div
+                key={index}
+                className={`page-indicator ${index === currentPage ? 'active' : ''}`}
+                onClick={() => updatePage(index)}
+              />
+            ))}
+          </div>
+
+          <div className="thumbnails">
+            {demoImages.map((image, index) => (
+              <div
+                key={index}
+                className={`thumbnail ${index === currentPage ? 'active' : ''}`}
+                onClick={() => updatePage(index)}
+              >
+                <Image 
+                  src={image} 
+                  alt={`Миниатюра ${index + 1}`} 
+                  className="thumbnail-image"
+                  width={80}
+                  height={60}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="footer-section">
+            <h3>Продукт</h3>
+            <a href="#features">Возможности</a>
+            <a href="#pricing">Тарифы</a>
+            <a href="#demo">Примеры</a>
+            <a href="#api">API</a>
+          </div>
+          <div className="footer-section">
+            <h3>Компания</h3>
+            <a href="#about">О нас</a>
+            <a href="#blog">Блог</a>
+            <a href="#careers">Карьера</a>
+            <a href="#contact">Контакты</a>
+          </div>
+          <div className="footer-section">
+            <h3>Поддержка</h3>
+            <a href="#help">Справка</a>
+            <a href="#docs">Документация</a>
+            <a href="#community">Сообщество</a>
+            <a href="#status">Статус</a>
+          </div>
+          <div className="footer-section">
+            <h3>Правовая информация</h3>
+            <a href="#privacy">Конфиденциальность</a>
+            <a href="#terms">Условия использования</a>
+            <a href="#cookies">Cookies</a>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <p>&copy; {new Date().getFullYear()} Dropic. Все права защищены.</p>
+        </div>
       </footer>
-    </div>
+    </>
   );
-}
+};
+
+export default Home;
