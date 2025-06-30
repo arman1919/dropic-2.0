@@ -20,6 +20,7 @@ interface Album {
   albumId: string;
   title: string;
   photos: Photo[];
+  description?: string;
 }
 
 const AlbumEditPage = () => {
@@ -33,6 +34,9 @@ const AlbumEditPage = () => {
   const [selectMode, setSelectMode] = useState(false);
   const [selectedForDelete, setSelectedForDelete] = useState<Set<string>>(new Set());
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState('');
@@ -56,6 +60,7 @@ const AlbumEditPage = () => {
 
       setAlbum(albumData);
       setTitle(albumData.title);
+      setDescription(albumData.description || '');
       setMedia(mediaData);
       setSelectedIds(new Set(albumData.photos.map((p) => p.photoId)));
     } catch (err: any) {
@@ -131,11 +136,11 @@ const AlbumEditPage = () => {
     try {
       await api.put(
         `/api/albums/${albumId}`,
-        { title, photoIds: Array.from(selectedIds) },
+        { title, photoIds: Array.from(selectedIds), description },
         { headers: authHeaders }
       );
       setSuccess('Изменения успешно сохранены');
-        setTimeout(() => setSuccess(''), 3000);
+      setTimeout(() => setSuccess(''), 3000);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Не удалось сохранить изменения');
     } finally {
@@ -158,23 +163,61 @@ const AlbumEditPage = () => {
     <div>
       <div className="album-edit-container">
         {success && <div className="notification success">{success}</div>}
-        <h2>Редактирование альбома</h2>
+        <h2 className="section-title">Редактирование альбома</h2>
 
         <div className="form-group">
-          <label htmlFor="title">Название альбома</label>
-          <input
-            id="title"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="form-input"
-          />
+          <h3 className="section-subtitle">Название альбома</h3>
+          {isEditingTitle ? (
+            <input
+              id="title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="form-input"
+              onBlur={() => setIsEditingTitle(false)}
+              autoFocus
+            />
+          ) : (
+            <div
+              className="album-title"
+              onClick={() => setIsEditingTitle(true)}
+              style={{ cursor: 'pointer', minHeight: 32, color: title ? undefined : '#aaa' }}
+            >
+              {title || 'Без названия'}
+            </div>
+          )}
         </div>
 
-        {/* Публичная ссылка и QR-код */}
-        <PublicLinkSection albumId={albumId} />
+        <div className="form-group">
+          <h3 className="section-subtitle">Описание альбома</h3>
+          {isEditingDescription ? (
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="form-input edit-description-input"
+              placeholder="Введите описание альбома..."
+              rows={3}
+              onBlur={() => setIsEditingDescription(false)}
+              autoFocus
+            />
+          ) : (
+            <div
+              className="album-title"
+              onClick={() => setIsEditingDescription(true)}
+              style={{ cursor: 'pointer', minHeight: 32, color: description ? undefined : '#aaa' }}
+            >
+              {description || 'Добавить описание'}
+            </div>
+          )}
+        </div>
 
-        <h3>Выбранные фотографии</h3>
+        <div className="form-group">
+          <h3 className="section-subtitle">Публичная ссылка на альбом:</h3>
+          <PublicLinkSection albumId={albumId} />
+        </div>
+
+        <h3 className="section-subtitle">Выбранные фотографии</h3>
 
         <div className="add-images-actions" style={{ marginTop: '1rem' }}>
           <GalleryControls
@@ -243,7 +286,7 @@ const AlbumEditPage = () => {
             Отмена
           </button>
         </div>
-              <MediaSelector
+        <MediaSelector
           isOpen={selectorOpen}
           onClose={() => setSelectorOpen(false)}
           onSelect={handleAddPhotos}

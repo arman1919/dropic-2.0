@@ -94,12 +94,13 @@ router.get('/:albumId', auth, async (req, res) => {
 // PUT /api/albums/:albumId – обновить название и/или список фотоIds
 router.put('/:albumId', auth, async (req, res) => {
   const { albumId } = req.params;
-  const { title, photoIds } = req.body; // photoIds: string[]
+  const { title, photoIds, description } = req.body; // photoIds: string[]
   try {
     const album = await Album.findOne({ albumId, userId: req.user.userId });
     if (!album) return res.status(404).json({ message: 'Альбом не найден' });
 
     if (title !== undefined) album.title = title;
+    if (description !== undefined) album.description = description;
 
     if (Array.isArray(photoIds)) {
       // получаем фото объекты из user.media
