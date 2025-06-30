@@ -844,3 +844,39 @@
   color: #4f46e5;
   letter-spacing: 0.01em;
 }
+
+.edit-image-button {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #4f46e5;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  transform: scale(0.9);
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+}
+
+.image-container:hover .edit-image-button,
+.edit-image-button.show-edit-btn {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: scale(1);
+}
+
+.edit-image-button:hover {
+  background: #f0f4ff;
+  color: #4338ca;
+  border-color: #c7d2fe;
+}

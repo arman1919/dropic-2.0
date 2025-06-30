@@ -94,7 +94,7 @@ router.get('/:albumId', auth, async (req, res) => {
 // PUT /api/albums/:albumId – обновить название и/или список фотоIds
 router.put('/:albumId', auth, async (req, res) => {
   const { albumId } = req.params;
-  const { title, photoIds, description } = req.body; // photoIds: string[]
+  const { title, photoIds, description, photos } = req.body;
   try {
     const album = await Album.findOne({ albumId, userId: req.user.userId });
     if (!album) return res.status(404).json({ message: 'Альбом не найден' });
@@ -102,11 +102,40 @@ router.put('/:albumId', auth, async (req, res) => {
     if (title !== undefined) album.title = title;
     if (description !== undefined) album.description = description;
 
+    // Если изменился состав фото — пересобираем массив
     if (Array.isArray(photoIds)) {
-      // получаем фото объекты из user.media
       const user = await require('../models/User').findOne({ userId: req.user.userId }).lean();
       const mediaMap = new Map((user.media || []).map((p) => [p.photoId, p]));
-      album.photos = photoIds.map((id) => mediaMap.get(id)).filter(Boolean);
+      // Сохраняем пользовательские свойства, если они уже были у фото
+      const oldPhotosMap = new Map((album.photos || []).map(p => [p.photoId, p]));
+      album.photos = photoIds.map((id) => {
+        const fromMedia = mediaMap.get(id);
+        const old = oldPhotosMap.get(id) || {};
+        return {
+          ...fromMedia,
+          description: old.description ?? fromMedia.description,
+          description_hidden: old.description_hidden ?? fromMedia.description_hidden,
+          date: old.date ?? fromMedia.date,
+          date_hidden: old.date_hidden ?? fromMedia.date_hidden,
+        };
+      }).filter(Boolean);
+    }
+
+    // Обновляем свойства фото (description, date и т.д.)
+    if (Array.isArray(photos)) {
+      album.photos = album.photos.map((photo) => {
+        const updated = photos.find((p) => p.photoId === photo.photoId);
+        if (updated) {
+          return {
+            ...photo,
+            description: updated.description ?? photo.description,
+            description_hidden: updated.description_hidden ?? photo.description_hidden,
+            date: updated.date ?? photo.date,
+            date_hidden: updated.date_hidden ?? photo.date_hidden,
+          };
+        }
+        return photo;
+      });
     }
 
     await album.save();
@@ -123,6 +152,9 @@ router.get('/:albumId/public', async (req, res) => {
   try {
     const album = await Album.findOne({ albumId }).lean();
     if (!album) return res.status(404).json({ message: 'Альбом не найден' });
+
+    // ВРЕМЕННЫЙ ЛОГ для отладки
+    // console.log('DEBUG album.photos:', JSON.stringify(album.photos, null, 2));
 
     // Отдаём только необходимые поля
     const images = (album.photos || []).map(({ photoId, url, description, date, description_hidden, date_hidden }) => ({

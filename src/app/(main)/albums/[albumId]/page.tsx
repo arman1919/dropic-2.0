@@ -8,6 +8,7 @@ import MediaSelector from '../../../../components/media/MediaSelector';
 import GalleryControls from '../../../../components/gallery/GalleryControls';
 import PublicLinkSection from '../../../../components/albums/PublicLinkSection';
 import NavBar from '../../../../components/ui/NavBar';
+import PhotoEditModal from '../../../../components/media/PhotoEditModal';
 
 interface Photo {
   photoId: string;
@@ -43,6 +44,11 @@ const AlbumEditPage = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
+  const [editingPhoto, setEditingPhoto] = useState<Photo | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const [albumPhotos, setAlbumPhotos] = useState<Photo[]>([]);
+
   const token = typeof window !== 'undefined' ? localStorage.getItem('userToken') : null;
 
   // helpers
@@ -63,6 +69,7 @@ const AlbumEditPage = () => {
       setDescription(albumData.description || '');
       setMedia(mediaData);
       setSelectedIds(new Set(albumData.photos.map((p) => p.photoId)));
+      setAlbumPhotos(albumData.photos);
     } catch (err: any) {
       if (err.response?.status === 401) {
         router.push('/auth');
@@ -127,18 +134,45 @@ const AlbumEditPage = () => {
       photos.forEach((p) => next.add(p.photoId));
       return next;
     });
+    // добавляем новые фото в albumPhotos, если их ещё нет
+    setAlbumPhotos((prev) => {
+      const existingIds = new Set(prev.map((p) => p.photoId));
+      const newPhotos = photos.filter((p) => !existingIds.has(p.photoId));
+      return [...prev, ...newPhotos];
+    });
+  };
+
+  const handleEditPhoto = (photo: Photo) => {
+    // Берём актуальное фото из albumPhotos
+    const freshPhoto = albumPhotos.find((p) => p.photoId === photo.photoId) || photo;
+    setEditingPhoto(freshPhoto);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSavePhoto = (updatedPhoto: any) => {
+    setAlbumPhotos((prev) => prev.map((p) => p.photoId === updatedPhoto.photoId ? { ...p, ...updatedPhoto } : p));
+    setEditingPhoto(null);
+    setIsEditModalOpen(false);
   };
 
   const handleSave = async () => {
     setSaving(true);
     setError('');
-
     try {
+      // Собираем только выбранные фото с их актуальными свойствами
+      const selectedPhotos = albumPhotos.filter((p) => selectedIds.has(p.photoId));
       await api.put(
         `/api/albums/${albumId}`,
-        { title, photoIds: Array.from(selectedIds), description },
+        { title, photoIds: Array.from(selectedIds), description, photos: selectedPhotos },
         { headers: authHeaders }
       );
+      // После успешного сохранения — получить свежий альбом и обновить состояние
+      const res = await api.get(`/api/albums/${albumId}`, { headers: authHeaders });
+      const albumData: Album = res.data.album;
+      setAlbum(albumData);
+      setAlbumPhotos(albumData.photos);
+      setMedia(albumData.photos);
+      setSelectedIds(new Set(albumData.photos.map((p) => p.photoId)));
       setSuccess('Изменения успешно сохранены');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err: any) {
@@ -238,12 +272,21 @@ const AlbumEditPage = () => {
         </div>
 
         <div className="media-grid">
-          {media.filter((p) => selectedIds.has(p.photoId)).map((photo) => {
+          {albumPhotos.filter((p) => selectedIds.has(p.photoId)).map((photo) => {
             const checked = selectedIds.has(photo.photoId);
             return (
               <div
                 key={photo.photoId}
                 className={`image-container ${selectedForDelete.has(photo.photoId) ? 'selected' : ''}`}
+                style={{ position: 'relative' }}
+                onMouseEnter={e => {
+                  const btn = e.currentTarget.querySelector('.edit-image-button');
+                  if (btn) btn.classList.add('show-edit-btn');
+                }}
+                onMouseLeave={e => {
+                  const btn = e.currentTarget.querySelector('.edit-image-button');
+                  if (btn) btn.classList.remove('show-edit-btn');
+                }}
                 onClick={() => {
                   if (!selectMode) return;
                   setSelectedForDelete((prev) => {
@@ -258,6 +301,17 @@ const AlbumEditPage = () => {
                 }}
               >
                 <img src={photo.url} alt={photo.originalName || photo.filename} className="gallery-image" />
+                <button
+                  className="edit-image-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditPhoto(photo);
+                  }}
+                  title="Редактировать"
+                  style={{ position: 'absolute', top: 8, left: 8, zIndex: 2, opacity: 0, pointerEvents: 'none', transition: 'opacity 0.2s, transform 0.2s', transform: 'scale(0.9)' }}
+                >
+                  ✎
+                </button>
                 {!selectMode && (
                   <button
                     className="delete-image-button"
@@ -268,6 +322,7 @@ const AlbumEditPage = () => {
                         next.delete(photo.photoId);
                         return next;
                       });
+                      setAlbumPhotos((prev) => prev.filter((p) => p.photoId !== photo.photoId));
                     }}
                   >
                     Удалить
@@ -290,6 +345,12 @@ const AlbumEditPage = () => {
           isOpen={selectorOpen}
           onClose={() => setSelectorOpen(false)}
           onSelect={handleAddPhotos}
+        />
+        <PhotoEditModal
+          isOpen={isEditModalOpen}
+          onClose={() => { setIsEditModalOpen(false); setEditingPhoto(null); }}
+          photo={editingPhoto}
+          onSave={handleSavePhoto}
         />
       </div>
     </div>

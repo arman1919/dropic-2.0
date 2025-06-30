@@ -45,7 +45,6 @@ body {
 
 .page-container {
     background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
     border-radius: 16px;
     padding: 1rem;
     max-width: 1200px;
