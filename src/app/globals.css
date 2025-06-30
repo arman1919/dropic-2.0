@@ -47,7 +47,7 @@ body {
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
     border-radius: 16px;
-    padding: 0 1rem 1rem; /* Верхний отступ для навбара, остальное по 2rem */
+    padding: 1rem;
     max-width: 1200px;
     margin: 0 auto;
     margin-top: 80px;
@@ -169,6 +169,7 @@ body {
     padding: 1rem;
     border-radius: 0.5rem;
     margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 .notification.success {

@@ -116,4 +116,33 @@ router.put('/:albumId', auth, async (req, res) => {
   }
 });
 
+// GET /api/albums/:albumId/public  — публичные данные без авторизации
+router.get('/:albumId/public', async (req, res) => {
+  const { albumId } = req.params;
+  try {
+    const album = await Album.findOne({ albumId }).lean();
+    if (!album) return res.status(404).json({ message: 'Альбом не найден' });
+
+    // Отдаём только необходимые поля
+    const images = (album.photos || []).map(({ photoId, url, description, date, description_hidden, date_hidden }) => ({
+      photoId,
+      url,
+      description,
+      date,
+      description_hidden,
+      date_hidden,
+    }));
+
+    res.json({
+      albumTitle: album.title,
+      description: album.description,
+      images,
+      options: album.options || {},
+    });
+  } catch (err) {
+    console.error('Public album fetch error:', err.message);
+    res.status(500).send('Ошибка сервера');
+  }
+});
+
 module.exports = router;

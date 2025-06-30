@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import api from '../../../../lib/api/client';
 import '../../../../styles/pages/AlbumEdit.css';
+import MediaSelector from '../../../../components/media/MediaSelector';
+import GalleryControls from '../../../../components/gallery/GalleryControls';
+import PublicLinkSection from '../../../../components/albums/PublicLinkSection';
 import NavBar from '../../../../components/ui/NavBar';
 
 interface Photo {
@@ -26,9 +29,13 @@ const AlbumEditPage = () => {
   const [album, setAlbum] = useState<Album | null>(null);
   const [media, setMedia] = useState<Photo[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectorOpen, setSelectorOpen] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedForDelete, setSelectedForDelete] = useState<Set<string>>(new Set());
   const [title, setTitle] = useState('');
 
   const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -76,6 +83,47 @@ const AlbumEditPage = () => {
     });
   };
 
+  const toggleSelectMode = () => {
+    setSelectMode((m) => {
+      const next = !m;
+      if (!next) {
+        // leaving select mode, clear temp selection
+        setSelectedForDelete(new Set());
+      }
+      return next;
+    });
+  };
+
+  const selectAllImages = () => {
+    setSelectedForDelete((prev) => {
+      const allIds = media.filter((p) => selectedIds.has(p.photoId)).map((p) => p.photoId);
+      if (prev.size === allIds.length) {
+        return new Set();
+      }
+      return new Set(allIds);
+    });
+  };
+
+  const deleteSelectedImages = () => {
+    if (selectedForDelete.size === 0) return;
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      selectedForDelete.forEach((id) => next.delete(id));
+      return next;
+    });
+    setSelectedForDelete(new Set());
+    setSelectMode(false);
+  };
+
+  const handleAddPhotos = (photos: Photo[]) => {
+    // merge selected IDs with new ones
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      photos.forEach((p) => next.add(p.photoId));
+      return next;
+    });
+  };
+
   const handleSave = async () => {
     setSaving(true);
     setError('');
@@ -86,7 +134,8 @@ const AlbumEditPage = () => {
         { title, photoIds: Array.from(selectedIds) },
         { headers: authHeaders }
       );
-      router.push('/profile');
+      setSuccess('Изменения успешно сохранены');
+        setTimeout(() => setSuccess(''), 3000);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Не удалось сохранить изменения');
     } finally {
@@ -108,6 +157,7 @@ const AlbumEditPage = () => {
   return (
     <div>
       <div className="album-edit-container">
+        {success && <div className="notification success">{success}</div>}
         <h2>Редактирование альбома</h2>
 
         <div className="form-group">
@@ -121,23 +171,71 @@ const AlbumEditPage = () => {
           />
         </div>
 
-        <h3>Выберите фотографии</h3>
+        {/* Публичная ссылка и QR-код */}
+        <PublicLinkSection albumId={albumId} />
+
+        <h3>Выбранные фотографии</h3>
+
+        <div className="add-images-actions" style={{ marginTop: '1rem' }}>
+          <GalleryControls
+              imagesCount={media.length}
+              selectMode={selectMode}
+              selectedCount={selectedForDelete.size}
+              toggleSelectMode={toggleSelectMode}
+              selectAllImages={selectAllImages}
+              deleteSelectedImages={deleteSelectedImages}
+            />
+
+          <div className="actions" style={{ marginTop: '1rem' }}>
+            <button className="add-images-button" onClick={() => setSelectorOpen(true)}>
+              Добавить изображения
+            </button>
+          </div>
+
+        </div>
+
         <div className="media-grid">
-          {media.map((photo) => {
+          {media.filter((p) => selectedIds.has(p.photoId)).map((photo) => {
             const checked = selectedIds.has(photo.photoId);
             return (
               <div
                 key={photo.photoId}
-                className={`media-item ${checked ? 'selected' : ''}`}
-                onClick={() => toggleSelect(photo.photoId)}
+                className={`image-container ${selectedForDelete.has(photo.photoId) ? 'selected' : ''}`}
+                onClick={() => {
+                  if (!selectMode) return;
+                  setSelectedForDelete((prev) => {
+                    const next = new Set(prev);
+                    if (next.has(photo.photoId)) {
+                      next.delete(photo.photoId);
+                    } else {
+                      next.add(photo.photoId);
+                    }
+                    return next;
+                  });
+                }}
               >
-                <img src={photo.url} alt={photo.originalName || photo.filename} />
+                <img src={photo.url} alt={photo.originalName || photo.filename} className="gallery-image" />
+                {!selectMode && (
+                  <button
+                    className="delete-image-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedIds((prev) => {
+                        const next = new Set(prev);
+                        next.delete(photo.photoId);
+                        return next;
+                      });
+                    }}
+                  >
+                    Удалить
+                  </button>
+                )}
               </div>
             );
           })}
         </div>
 
-        <div className="actions">
+        <div className="edit-actions">
           <button className="primary-button" onClick={handleSave} disabled={saving}>
             {saving ? 'Сохранение...' : 'Сохранить'}
           </button>
@@ -145,6 +243,11 @@ const AlbumEditPage = () => {
             Отмена
           </button>
         </div>
+              <MediaSelector
+          isOpen={selectorOpen}
+          onClose={() => setSelectorOpen(false)}
+          onSelect={handleAddPhotos}
+        />
       </div>
     </div>
   );
