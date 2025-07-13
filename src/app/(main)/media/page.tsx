@@ -50,12 +50,48 @@ const MediaPage: React.FC = () => {
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      fileList.forEach((file) => formData.append("files", file));
+      // 1. Получаем подпись для загрузки
+      const signRes = await api.post<{
+        timestamp: number;
+        signature: string;
+        apiKey: string;
+        cloudName: string;
+        folder: string | null;
+      }>("/api/media/sign", { folder: "" });
 
-      await api.post("/api/media/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const { timestamp, signature, apiKey, cloudName, folder } = signRes.data;
+
+      // 2. Загружаем файлы напрямую в Cloudinary
+      const uploaded: any[] = [];
+      for (const file of fileList) {
+        const uploadData = new FormData();
+        uploadData.append("file", file);
+        uploadData.append("api_key", apiKey);
+        uploadData.append("timestamp", String(timestamp));
+        uploadData.append("signature", signature);
+        if (folder) uploadData.append("folder", folder);
+
+        const cloudRes = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
+          {
+            method: "POST",
+            body: uploadData,
+          },
+        );
+        if (!cloudRes.ok) throw new Error("Cloudinary upload failed");
+        const json = await cloudRes.json();
+        uploaded.push({
+          photoId: json.public_id,
+          publicId: json.public_id,
+          filename: json.asset_id || json.public_id,
+          originalName: json.original_filename,
+          url: json.url,
+          secureUrl: json.secure_url,
+        });
+      }
+
+      // 3. Сохраняем метаданные на сервере
+      await api.post("/api/media/save", { files: uploaded });
 
       await fetchUserMedia();
     } catch (err) {
@@ -63,7 +99,6 @@ const MediaPage: React.FC = () => {
       console.error("Error uploading files:", err);
     } finally {
       setUploading(false);
-      // reset input value so same file can be uploaded again
       if (e.target) e.target.value = "";
     }
   };
