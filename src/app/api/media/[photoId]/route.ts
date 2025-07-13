@@ -7,7 +7,7 @@ import { cloudinary } from '@/lib/cloudinary';
 // DELETE /api/media/:photoId – удаление фото из Cloudinary и user.media
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { photoId: string } },
+  { params }: { params: any },
 ) {
   try {
     const { userId } = requireAuth(req);
