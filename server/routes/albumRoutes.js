@@ -105,14 +105,29 @@ router.put('/:albumId', auth, async (req, res) => {
     // Если изменился состав фото — пересобираем массив
     if (Array.isArray(photoIds)) {
       const user = await require('../models/User').findOne({ userId: req.user.userId }).lean();
-      const mediaMap = new Map((user.media || []).map((p) => [p.photoId, p]));
+      // Строим карту идентификаторов -> медиа, чтобы покрыть разные варианты photoId
+      const mediaMap = new Map();
+      (user.media || []).forEach((p) => {
+        if (p.photoId) mediaMap.set(p.photoId, p);
+        if (p.publicId) mediaMap.set(p.publicId, p);
+        if (p.filename) {
+          mediaMap.set(p.filename, p);
+          const noExt = p.filename.replace(/\.[^/.]+$/, '');
+          mediaMap.set(noExt, p);
+        }
+      });
       // Сохраняем пользовательские свойства, если они уже были у фото
       const oldPhotosMap = new Map((album.photos || []).map(p => [p.photoId, p]));
       album.photos = photoIds.map((id) => {
         const fromMedia = mediaMap.get(id);
+        if (!fromMedia) {
+          console.warn(`Media not found for photoId ${id}, skipping`);
+          return null; // будет отфильтровано
+        }
         const old = oldPhotosMap.get(id) || {};
-        return {
+                return {
           ...fromMedia,
+          photoId: fromMedia.photoId || id,
           description: old.description ?? fromMedia.description,
           description_hidden: old.description_hidden ?? fromMedia.description_hidden,
           date: old.date ?? fromMedia.date,

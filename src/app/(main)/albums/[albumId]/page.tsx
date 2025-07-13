@@ -9,6 +9,7 @@ import GalleryControls from '../../../../components/gallery/GalleryControls';
 import PublicLinkSection from '../../../../components/albums/PublicLinkSection';
 import NavBar from '../../../../components/ui/NavBar';
 import PhotoEditModal from '../../../../components/media/PhotoEditModal';
+import { CldImage } from 'next-cloudinary';
 
 interface Photo {
   photoId: string;
@@ -136,6 +137,12 @@ const AlbumEditPage = () => {
     });
     // добавляем новые фото в albumPhotos, если их ещё нет
     setAlbumPhotos((prev) => {
+      const existingIds = new Set(prev.map((p) => p.photoId));
+      const newPhotos = photos.filter((p) => !existingIds.has(p.photoId));
+      return [...prev, ...newPhotos];
+    });
+    // также обновляем общий список media, чтобы счётчики и другое UI были корректны
+    setMedia((prev) => {
       const existingIds = new Set(prev.map((p) => p.photoId));
       const newPhotos = photos.filter((p) => !existingIds.has(p.photoId));
       return [...prev, ...newPhotos];
@@ -272,8 +279,9 @@ const AlbumEditPage = () => {
         </div>
 
         <div className="media-grid">
-          {albumPhotos.filter((p) => selectedIds.has(p.photoId)).map((photo) => {
+          {albumPhotos.filter((p) => p.photoId && selectedIds.has(p.photoId)).map((photo) => {
             const checked = selectedIds.has(photo.photoId);
+            if (!photo.photoId) return null;
             return (
               <div
                 key={photo.photoId}
@@ -300,7 +308,16 @@ const AlbumEditPage = () => {
                   });
                 }}
               >
-                <img src={photo.url} alt={photo.originalName || photo.filename} className="gallery-image" />
+                <CldImage
+                  config={{ cloud: { cloudName: 'dofxdkqoa' } }}
+                  src={photo.photoId}
+                  alt={photo.originalName || photo.filename}
+                  className="gallery-image"
+                  width="300"
+                  height="300"
+                  crop="fill"
+                  gravity="auto"
+                />
                 <button
                   className="edit-image-button"
                   onClick={(e) => {

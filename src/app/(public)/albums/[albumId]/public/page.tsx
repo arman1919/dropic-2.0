@@ -3,15 +3,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import styles from './PublicAlbum.module.css';
+import { CldImage } from 'next-cloudinary';
 
 const SERVER_BASE_URL = 'http://localhost:5000';
-
-function getImageUrl(image: any, index: number) {
-  if (!image) return null;
-  return (image.url || image).startsWith('http')
-    ? (image.url || image)
-    : `${SERVER_BASE_URL}${image.url || image}`;
-}
 
 export default function PublicAlbumPage() {
   const params = useParams();
@@ -322,12 +316,16 @@ export default function PublicAlbumPage() {
                 slideDirection === 'left' ? styles.moveToLeft :
                 slideDirection === 'right' ? styles.moveToRight : ''
               }`}>
-                <img
+                <CldImage
                   ref={imageRef}
-                  src={getImageUrl(images[currentImageIndex], currentImageIndex)}
+                  src={images[currentImageIndex].photoId}
                   alt={`Фото ${currentImageIndex + 1}`}
                   className={styles.currentImage}
                   onLoad={handleImageLoad}
+                  width="1200"
+                  height="800"
+                  crop="fill"
+                  gravity="auto"
                 />
                 {/* Информация о фото */}
                 {images[currentImageIndex] && (() => {
@@ -353,10 +351,14 @@ export default function PublicAlbumPage() {
                   slideDirection === 'left' ? styles.moveFromRight :
                   slideDirection === 'right' ? styles.moveFromLeft : ''
                 }`}>
-                  <img
-                    src={getImageUrl(images[nextIndex], nextIndex)}
+                  <CldImage
+                    src={images[nextIndex].photoId}
                     alt={`Фото ${nextIndex + 1}`}
                     className={styles.currentImage}
+                    width="1200"
+                    height="800"
+                    crop="fill"
+                    gravity="auto"
                   />
                   {images[nextIndex] && (
                     <div className={styles.photoInfo}>
@@ -436,12 +438,16 @@ export default function PublicAlbumPage() {
                     ? (image.url || image)
                     : `${SERVER_BASE_URL}${image.url || image}`;
                   return (
-                    <img
+                    <CldImage
                       key={index}
-                      src={thumbUrl}
+                      src={image.photoId}
                       alt={`Миниатюра ${index + 1}`}
                       className={`${styles.thumbnail} ${index === currentImageIndex ? styles.activeThumbnail : ''}`}
                       onClick={() => goToImage(index)}
+                      width="100"
+                      height="60"
+                      crop="fill"
+                      gravity="auto"
                     />
                   );
                 })}

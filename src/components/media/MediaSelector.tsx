@@ -37,7 +37,19 @@ const MediaSelector: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
     setLoading(true);
     try {
       const res = await api.get('/api/media', { headers });
-      setMedia(res.data.media || []);
+      const normalized = (res.data.media || []).map((m: any) => {
+        if (m.photoId) return m;
+        if (m.publicId) return { ...m, photoId: m.publicId };
+        // fallback: derive from filename before last slash
+                let idFromFilename: string | undefined;
+        if (m.filename) {
+          // remove file extension but keep folder structure if present
+          const noExt = m.filename.replace(/\.[^/.]+$/, '');
+          idFromFilename = noExt;
+        }
+        return { ...m, photoId: idFromFilename || '' };
+      });
+      setMedia(normalized);
       setError(null);
     } catch (e) {
       console.error(e);
