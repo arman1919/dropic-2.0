@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import styles from './PublicAlbum.module.css';
 import { CldImage } from 'next-cloudinary';
 
-const SERVER_BASE_URL = 'http://localhost:5000';
+const SERVER_BASE_URL = '/api';
 
 export default function PublicAlbumPage() {
   const params = useParams();
