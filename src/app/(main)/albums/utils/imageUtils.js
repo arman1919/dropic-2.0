@@ -5,7 +5,7 @@ export const getImageUrl = (image, albumId) => {
   if (!image) return 'https://via.placeholder.com/400x300?text=Нет+изображения';
   
   // Базовый URL сервера
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
   
   // Если image - это строка (URL или путь)
   if (typeof image === 'string') {

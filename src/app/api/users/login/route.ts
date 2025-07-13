@@ -4,6 +4,10 @@ import jwt from 'jsonwebtoken';
 import { connectDB } from '@/lib/db';
 import User from '@/models/User';
 
+export function OPTIONS() {
+  return NextResponse.json({}, { status: 200 });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
