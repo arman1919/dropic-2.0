@@ -20,6 +20,7 @@ interface MediaFile {
 const MediaPage: React.FC = () => {
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [selectMode, setSelectMode] = useState(false);
@@ -45,10 +46,33 @@ const MediaPage: React.FC = () => {
   };
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const fileList = Array.from(e.target.files || []);
-    if (fileList.length === 0) return;
+    const rawFiles = Array.from(e.target.files || []);
+    if (rawFiles.length === 0) return;
+
+    // Фильтруем по типу и размеру (мобилки часто дают HEIC или большие файлы)
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+    ];
+    const maxSize = 8 * 1024 * 1024; // 8MB
+
+    const fileList = rawFiles.filter((f) => {
+      if (!allowedTypes.includes(f.type) || f.size > maxSize) {
+        console.warn("Пропускаем неподдерживаемый файл", f.name, f.type, f.size);
+        return false;
+      }
+      return true;
+    });
+
+    if (fileList.length === 0) {
+      setError("Выберите JPG/PNG/WebP/GIF до 8 МБ");
+      return;
+    }
 
     setUploading(true);
+    setUploadProgress(0);
     try {
       // 1. Получаем подпись для загрузки
       const signRes = await api.post<{
@@ -63,7 +87,8 @@ const MediaPage: React.FC = () => {
 
       // 2. Загружаем файлы напрямую в Cloudinary
       const uploaded: any[] = [];
-      for (const file of fileList) {
+      for (let idx = 0; idx < fileList.length; idx++) {
+        const file = fileList[idx];
         const uploadData = new FormData();
         uploadData.append("file", file);
         uploadData.append("api_key", apiKey);
@@ -76,9 +101,12 @@ const MediaPage: React.FC = () => {
           {
             method: "POST",
             body: uploadData,
+            mode: "cors",
           },
         );
         if (!cloudRes.ok) throw new Error("Cloudinary upload failed");
+        // обновляем прогресс простым подсчётом загруженных файлов
+        setUploadProgress(Math.round(((idx + 1) / fileList.length) * 100));
         const json = await cloudRes.json();
         uploaded.push({
           photoId: json.public_id,
@@ -100,6 +128,7 @@ const MediaPage: React.FC = () => {
     } finally {
       setUploading(false);
       if (e.target) e.target.value = "";
+      setUploadProgress(0);
     }
   };
 
@@ -186,8 +215,13 @@ const MediaPage: React.FC = () => {
               multiple
             />
             <label htmlFor="file-upload" className="upload-button">
-              {uploading ? "Загрузка..." : "Загрузить фото"}
+              {uploading ? `Загрузка ${uploadProgress}%` : "Загрузить фото"}
             </label>
+            {uploading && (
+              <div className="progress-container">
+                <div className="progress-bar" style={{ width: `${uploadProgress}%` }} />
+              </div>
+            )}
           </div>
 
           <div className="selection-controls">
