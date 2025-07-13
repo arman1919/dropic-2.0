@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // Используем относительный путь, чтобы работало и локально, и на Vercel
-  baseURL: '/api',
+  // Относительный корень; все маршруты начинаются с /api
+  baseURL: '',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
