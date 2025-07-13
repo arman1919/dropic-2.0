@@ -17,7 +17,7 @@ const CreateAlbumPage = () => {
     setError('');
 
     try {
-      const response = await api.post('/api/albums', { name: albumName });
+      const response = await api.post('/api/albums', { title: albumName });
 
       if (response.data.albumId) {
         const albumId = response.data.albumId;

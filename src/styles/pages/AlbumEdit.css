@@ -143,6 +143,11 @@
     gap: 1rem;
 }
 
+.link-actions-container {
+    display: flex;
+    gap: 1rem;
+}
+
 .qr-code-section {
   display: flex;
   justify-content: center;
@@ -306,6 +311,10 @@
     .image-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 1rem;
+    }
+
+    .link-actions-container {
+        flex-direction: column;
     }
 
     .admin-container {

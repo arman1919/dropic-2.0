@@ -37,14 +37,7 @@ const AuthPage: React.FC = () => {
         authData.username = username;
       }
 
-      console.log("Отправляем запрос:", {
-        url: `/api/users${endpoint}`,
-        data: authData,
-      });
-
       const response = await api.post(`/api/users${endpoint}`, authData);
-
-      console.log("Ответ сервера:", response.data);
 
       if (response.data.token) {
         if (typeof window !== "undefined") {

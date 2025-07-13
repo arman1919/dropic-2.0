@@ -30,7 +30,6 @@ export const getImageUrl = (image, albumId) => {
   }
   
   // Если ничего не подошло
-  console.log('Неизвестный формат изображения:', image);
   return 'https://via.placeholder.com/400x300?text=Неизвестный+формат';
 };
 

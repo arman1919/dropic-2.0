@@ -86,3 +86,99 @@
 .page-with-navbar {
   padding-top: 80px; /* 64px высота навбара + 16px доп. отступ */
 }
+
+/* ---------- Responsive ---------- */
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 26px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.burger-line {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Burger -> X */
+.burger.open .burger-line:nth-child(1) {
+  transform: translateY(8px) rotate(45deg); transform-origin: center;
+}
+.burger.open .burger-line:nth-child(2) {
+  opacity: 0;
+}
+.burger.open .burger-line:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg); transform-origin: center;
+}
+
+/* Initially hide nav links on mobile */
+.navbar-links {
+  transition: max-height 0.3s ease;
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    height: auto;
+  }
+  .burger {
+    display: flex;
+  }
+
+  .navbar-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 1rem;
+    left: auto;
+    width: 200px;
+    right: 0;
+    background-color: #1a365d;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 999;
+  }
+
+  .navbar-container {
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    overflow: hidden;
+    max-height: 0;
+    gap: 0.5rem;
+  }
+
+  .navbar-links.open {
+    display: flex;
+    max-height: 500px;
+    animation: fadeSlide 0.4s ease forwards;
+  }
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+  .navbar-button {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .brand-text {
+    font-size: 20px;
+  }
+}

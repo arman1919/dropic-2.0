@@ -34,12 +34,15 @@ const PublicLinkSection: React.FC<Props> = ({ albumId }) => {
             className="link-input"
             style={{ flex: 1, padding: '0.5rem' }}
           />
-          <button onClick={() => window.open(publicLink, '_blank')} className="view-button primary-button">
-            Посмотреть
-          </button>
-          <button onClick={copyToClipboard} className="copy-button secondary-button">
-            Копировать
-          </button>
+          <div className='link-actions-container'>
+            <button onClick={() => window.open(publicLink, '_blank')} className="view-button primary-button">
+              Посмотреть
+            </button>
+            <button onClick={copyToClipboard} className="copy-button secondary-button">
+              Копировать
+            </button>
+          </div>
+
         </div>
             
         <QrCodeSection publicLink={publicLink} />
