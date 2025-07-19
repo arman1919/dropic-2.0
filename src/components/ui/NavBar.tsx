@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Plus, User, Image as ImageIcon, LogOut } from 'lucide-react';
@@ -10,6 +10,7 @@ import dropicLogo from '../../..//public/images/dropic-logo.png';
 
 const NavBar = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -55,11 +56,11 @@ const NavBar = () => {
             <Plus size={18} />
             Создать новый альбом
           </button>
-          <Link href="/profile" className="navbar-button" onClick={() => setMenuOpen(false)}>
+          <Link href="/profile" className={`navbar-button ${pathname === '/profile' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <User size={18} />
             Мои альбомы
           </Link>
-          <Link href="/media" className="navbar-button" onClick={() => setMenuOpen(false)}>
+          <Link href="/media" className={`navbar-button ${pathname === '/media' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <ImageIcon size={18} />
             Медиа библиотека
           </Link>

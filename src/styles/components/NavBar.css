@@ -75,11 +75,17 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.5rem;
 }
 
 .navbar-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-button.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-weight: 600;
 }
 
 /* Добавляем отступ для контента под навбаром */

@@ -10,6 +10,7 @@ import PublicLinkSection from '../../../../components/albums/PublicLinkSection';
 import NavBar from '../../../../components/ui/NavBar';
 import PhotoEditModal from '../../../../components/media/PhotoEditModal';
 import { CldImage } from 'next-cloudinary';
+import { Save, X, Plus, Edit3, Trash2, Check, Square } from 'lucide-react';
 
 interface Photo {
   photoId: string;
@@ -272,6 +273,7 @@ const AlbumEditPage = () => {
 
           <div className="actions" style={{ marginTop: '1rem' }}>
             <button className="add-images-button" onClick={() => setSelectorOpen(true)}>
+              <Plus size={18} />
               Добавить изображения
             </button>
           </div>
@@ -327,7 +329,7 @@ const AlbumEditPage = () => {
                   title="Редактировать"
                   style={{ position: 'absolute', top: 8, left: 8, zIndex: 2, opacity: 0, pointerEvents: 'none', transition: 'opacity 0.2s, transform 0.2s', transform: 'scale(0.9)' }}
                 >
-                  ✎
+                  <Edit3 size={16} />
                 </button>
                 {!selectMode && (
                   <button
@@ -352,9 +354,11 @@ const AlbumEditPage = () => {
 
         <div className="edit-actions">
           <button className="primary-button" onClick={handleSave} disabled={saving}>
+            <Save size={18} />
             {saving ? 'Сохранение...' : 'Сохранить'}
           </button>
           <button className="secondary-button" onClick={() => router.push('/profile')} disabled={saving}>
+            <X size={18} />
             Отмена
           </button>
         </div>
