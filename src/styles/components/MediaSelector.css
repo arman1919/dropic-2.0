@@ -39,9 +39,18 @@
 .close-button {
   background: none;
   border: none;
-  font-size: 1.5rem;
   cursor: pointer;
   color: #666;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .media-selector-grid {
@@ -133,6 +142,49 @@
 .confirm-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+.no-media-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.no-media-message {
+  color: #4a5568;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.no-media-description {
+  color: #718096;
+  font-size: 1rem;
+  margin: 0;
+  max-width: 300px;
+}
+
+.go-to-media-button {
+  background: #3182ce;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.go-to-media-button:hover {
+  background: #2c5aa0;
 }
 
 .loading-message,

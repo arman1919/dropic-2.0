@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import api from '../../lib/api/client';
 import '../../styles/components/MediaSelector.css';
+import { Upload, X } from 'lucide-react';
 
 interface Photo {
   photoId: string;
@@ -18,6 +20,7 @@ interface Props {
 }
 
 const MediaSelector: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
+  const router = useRouter();
   const [media, setMedia] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -81,7 +84,9 @@ const MediaSelector: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
       <div className="media-selector-modal">
         <div className="media-selector-header">
           <h2>Выберите изображения</h2>
-          <button className="close-button" onClick={onClose}>&times;</button>
+          <button className="close-button" onClick={onClose}>
+            <X size={20} />
+          </button>
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -90,20 +95,38 @@ const MediaSelector: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
           <div className="loading-message">Загрузка медиафайлов...</div>
         ) : (
           <>
-            <div className="media-selector-grid">
-              {media.map((item) => (
-                <div
-                  key={item.photoId}
-                  className={`media-selector-item ${
-                    selected.find((s) => s.photoId === item.photoId) ? 'selected' : ''
-                  }`}
-                  onClick={() => toggle(item)}
+            {media.length === 0 ? (
+              <div className="no-media-container">
+                <div className="no-media-message">Нет изображений</div>
+                <p className="no-media-description">
+                  Сначала загрузите фото в медиа библиотеку
+                </p>
+                <button 
+                  className="go-to-media-button"
+                  onClick={() => {
+                    onClose();
+                    router.push('/media');
+                  }}
                 >
-                  <img src={item.url} alt={item.originalName || item.filename} />
-                </div>
-              ))}
-              {media.length === 0 && <div className="no-media-message">Нет изображений</div>}
-            </div>
+                  <Upload size={18} />
+                  Перейти к загрузке
+                </button>
+              </div>
+            ) : (
+              <div className="media-selector-grid">
+                {media.map((item) => (
+                  <div
+                    key={item.photoId}
+                    className={`media-selector-item ${
+                      selected.find((s) => s.photoId === item.photoId) ? 'selected' : ''
+                    }`}
+                    onClick={() => toggle(item)}
+                  >
+                    <img src={item.url} alt={item.originalName || item.filename} />
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="media-selector-footer">
               <button className="cancel-button" onClick={onClose}>
