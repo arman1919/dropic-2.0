@@ -170,8 +170,8 @@ const UserProfile = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
+      <div className="loading-container" suppressHydrationWarning={true}>
+        <div className="loading-spinner" suppressHydrationWarning={true}></div>
         <p className="loading-text">Загрузка альбомов...</p>
       </div>
     );
@@ -179,7 +179,7 @@ const UserProfile = () => {
 
   if (error) {
     return (
-      <div className="error-container">
+      <div className="error-container" suppressHydrationWarning={true}>
         <p className="error-message">{error}</p>
         <button onClick={() => window.location.reload()} className="btn btn-primary">Попробовать снова</button>
       </div>
@@ -187,7 +187,7 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="content-container">
+    <div className="content-container" suppressHydrationWarning={true}>
       <div className="content-header">
         <h1 className="page-title">Мои Альбомы</h1>
         
@@ -220,7 +220,7 @@ const UserProfile = () => {
         </div>
       </div>
       
-      <div className="albums-grid">
+      <div className="albums-grid" suppressHydrationWarning={true}>
         {albums.map((album, index) => {
           const isSelected = selectedAlbums.includes(album.albumId);
           
