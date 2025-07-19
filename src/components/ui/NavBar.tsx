@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
+import { Plus, User, Image as ImageIcon, LogOut } from 'lucide-react';
 import '../../styles/components/NavBar.css';
 import dropicLogo from '../../..//public/images/dropic-logo.png';
 
@@ -51,15 +52,19 @@ const NavBar = () => {
 
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           <button onClick={createNewAlbum} className="navbar-button">
+            <Plus size={18} />
             Создать новый альбом
           </button>
           <Link href="/profile" className="navbar-button" onClick={() => setMenuOpen(false)}>
+            <User size={18} />
             Мои альбомы
           </Link>
           <Link href="/media" className="navbar-button" onClick={() => setMenuOpen(false)}>
+            <ImageIcon size={18} />
             Медиа библиотека
           </Link>
           <button onClick={handleLogout} className="navbar-button">
+            <LogOut size={18} />
             Выйти
           </button>
         </div>

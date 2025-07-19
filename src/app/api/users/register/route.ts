@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const payload = { user: { userId: user.userId } };
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error('JWT_SECRET not set');
-    const token = jwt.sign(payload, secret, { expiresIn: '5h' });
+    const token = jwt.sign(payload, secret, { expiresIn: '30d' });
 
     return NextResponse.json({ success: true, token }, { status: 201 });
   } catch (err: any) {

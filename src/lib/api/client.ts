@@ -19,4 +19,24 @@ api.interceptors.request.use(
   }
 );
 
+// Response interceptor для обработки истечения токена
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      // Токен истёк или недействителен
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('email');
+      
+      // Перенаправляем на страницу авторизации, если не находимся уже там
+      if (!window.location.pathname.includes('/auth')) {
+        window.location.href = '/auth';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

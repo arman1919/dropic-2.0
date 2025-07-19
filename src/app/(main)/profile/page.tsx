@@ -159,7 +159,7 @@ const UserProfile = () => {
     if (selectMode) {
       toggleAlbumSelection(albumId);
     } else {
-      router.push(`/albums/${albumId}/public`);
+      router.push(`/albums/${albumId}`);
     }
   };
   

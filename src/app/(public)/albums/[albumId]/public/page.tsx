@@ -92,7 +92,7 @@ export default function PublicAlbumPage() {
 
   // Переход к редактированию альбома
   const handleEditAlbum = () => {
-    router.push(`/admin/${albumId}`);
+    router.push(`/albums/${albumId}`);
   };
 
   // Переход к конкретному изображению

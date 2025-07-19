@@ -8,6 +8,7 @@ import "@/styles/pages/Media.css";
 import api from "@/lib/api/client";
 import { deleteMedia } from "@/lib/api/mediaApi";
 import { AxiosError } from "axios";
+import { Upload, Check, X, Trash2 } from "lucide-react";
 
 interface MediaFile {
   _id?: string; // id из БД, может отсутствовать сразу после загрузки
@@ -215,6 +216,7 @@ const MediaPage: React.FC = () => {
               multiple
             />
             <label htmlFor="file-upload" className="upload-button">
+              <Upload size={18} />
               {uploading ? `Загрузка ${uploadProgress}%` : "Загрузить фото"}
             </label>
             {uploading && (
@@ -229,6 +231,7 @@ const MediaPage: React.FC = () => {
               className={`select-mode-button ${selectMode ? "active" : ""}`}
               onClick={toggleSelectMode}
             >
+              {selectMode ? <X size={18} /> : <Check size={18} />}
               {selectMode ? "Отменить выбор" : "Выбрать файлы"}
             </button>
 
@@ -242,6 +245,7 @@ const MediaPage: React.FC = () => {
                   onClick={deleteSelectedFiles}
                   disabled={selectedFiles.length === 0}
                 >
+                  <Trash2 size={18} />
                   Удалить выбранные ({selectedFiles.length})
                 </button>
               </>
