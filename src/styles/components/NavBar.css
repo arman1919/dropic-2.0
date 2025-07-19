@@ -152,6 +152,9 @@
     flex-direction: column;
     gap: 0.5rem;
     z-index: 999;
+    align-items: start;
+    overflow: hidden;
+    max-height: 0;
   }
 
   .navbar-container {
@@ -159,13 +162,6 @@
     justify-content: space-between;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-  }
-
-  .navbar-links {
-    flex-direction: column;
-    overflow: hidden;
-    max-height: 0;
-    gap: 0.5rem;
   }
 
   .navbar-links.open {
