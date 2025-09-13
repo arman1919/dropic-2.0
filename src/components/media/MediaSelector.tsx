@@ -56,7 +56,7 @@ const MediaSelector: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
       setError(null);
     } catch (e) {
       console.error(e);
-      setError('Не удалось загрузить медиафайлы');
+      setError('Failed to load media files');
     } finally {
       setLoading(false);
     }
@@ -83,7 +83,7 @@ const MediaSelector: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
     <div className="media-selector-overlay">
       <div className="media-selector-modal">
         <div className="media-selector-header">
-          <h2>Выберите изображения</h2>
+          <h2>Select images</h2>
           <button className="close-button" onClick={onClose}>
             <X size={20} />
           </button>
@@ -92,14 +92,14 @@ const MediaSelector: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
         {error && <div className="error-message">{error}</div>}
 
         {loading ? (
-          <div className="loading-message">Загрузка медиафайлов...</div>
+          <div className="loading-message">Loading media files...</div>
         ) : (
           <>
             {media.length === 0 ? (
               <div className="no-media-container">
-                <div className="no-media-message">Нет изображений</div>
+                <div className="no-media-message">No images</div>
                 <p className="no-media-description">
-                  Сначала загрузите фото в медиа библиотеку
+                  First upload photos to the media library
                 </p>
                 <button 
                   className="go-to-media-button"
@@ -109,7 +109,7 @@ const MediaSelector: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
                   }}
                 >
                   <Upload size={18} />
-                  Перейти к загрузке
+                  Go to upload
                 </button>
               </div>
             ) : (
@@ -130,14 +130,14 @@ const MediaSelector: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
 
             <div className="media-selector-footer">
               <button className="cancel-button" onClick={onClose}>
-                Отмена
+                Cancel
               </button>
               <button
                 className="confirm-button"
                 onClick={confirm}
                 disabled={selected.length === 0}
               >
-                Добавить выбранные ({selected.length})
+                Add selected ({selected.length})
               </button>
             </div>
           </>

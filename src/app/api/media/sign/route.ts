@@ -34,6 +34,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('Sign error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }

@@ -16,13 +16,13 @@ export async function GET(
 
     const album = await Album.findOne({ albumId, userId }).lean();
     if (!album) {
-      return NextResponse.json({ message: 'Альбом не найден' }, { status: 404 });
+      return NextResponse.json({ message: 'Album not found' }, { status: 404 });
     }
 
     return NextResponse.json({ album });
   } catch (err: any) {
     console.error('Album GET error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }
 
@@ -40,7 +40,7 @@ export async function PUT(
     await connectDB();
     const album = await Album.findOne({ albumId, userId });
     if (!album) {
-      return NextResponse.json({ message: 'Альбом не найден' }, { status: 404 });
+      return NextResponse.json({ message: 'Album not found' }, { status: 404 });
     }
 
     if (title !== undefined) album.title = title;
@@ -102,7 +102,7 @@ export async function PUT(
     return NextResponse.json({ success: true });
   } catch (err: any) {
     console.error('Album PUT error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }
 
@@ -122,16 +122,16 @@ export async function DELETE(
     await connectDB();
     const album = await Album.findOne({ albumId, userId });
     if (!album) {
-      return NextResponse.json({ message: 'Альбом не найден' }, { status: 404 });
+      return NextResponse.json({ message: 'Album not found' }, { status: 404 });
     }
     if (album.deleteToken !== token) {
-      return NextResponse.json({ message: 'Неверный токен удаления' }, { status: 403 });
+      return NextResponse.json({ message: 'Invalid delete token' }, { status: 403 });
     }
 
     await Album.deleteOne({ _id: album._id });
     return NextResponse.json({ success: true });
   } catch (err: any) {
     console.error('Album DELETE error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }

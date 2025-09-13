@@ -13,7 +13,7 @@ export async function GET(
 
     const album = await Album.findOne({ albumId }).lean();
     if (!album) {
-      return NextResponse.json({ message: 'Альбом не найден' }, { status: 404 });
+      return NextResponse.json({ message: 'Album not found' }, { status: 404 });
     }
 
     const images = (album.photos || []).map(
@@ -35,6 +35,6 @@ export async function GET(
     });
   } catch (err: any) {
     console.error('Public album GET error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const { files } = await req.json();
 
     if (!Array.isArray(files) || files.length === 0) {
-      return NextResponse.json({ message: 'Нет файлов' }, { status: 400 });
+      return NextResponse.json({ message: 'No files provided' }, { status: 400 });
     }
 
     await connectDB();
@@ -23,6 +23,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (err: any) {
     console.error('Media save error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }

@@ -21,7 +21,7 @@ const AuthPage: React.FC = () => {
     setLoading(true);
 
     if (!isLogin && password !== confirmPassword) {
-      setError("Пароли не совпадают");
+      setError("Passwords do not match");
       setLoading(false);
       return;
     }
@@ -47,10 +47,10 @@ const AuthPage: React.FC = () => {
         router.push("/");
       } else if (response.data.success) {
         if (isLogin) {
-          setError("Сервер не вернул токен авторизации");
+          setError("The server did not return an auth token");
         } else {
           setIsLogin(true);
-          setError("Регистрация успешна! Теперь вы можете войти.");
+          setError("Registration successful! You can now log in.");
           setEmail("");
           setUsername("");
           setPassword("");
@@ -63,20 +63,20 @@ const AuthPage: React.FC = () => {
 
       if (err.response) {
         if (err.response.status === 401) {
-          setError("Неверный email или пароль");
+          setError("Invalid email or password");
         } else if (err.response.status === 409) {
-          setError(err.response.data?.message || "Пользователь уже существует");
+          setError(err.response.data?.message || "User already exists");
         } else {
           const errorMessage =
             err.response.data?.message ||
             err.response.data?.error ||
-            "Произошла ошибка при авторизации";
+            "An error occurred during authentication";
           setError(errorMessage);
         }
       } else if (err.request) {
-        setError("Сервер недоступен. Пожалуйста, проверьте подключение");
+        setError("Server is unavailable. Please check your connection");
       } else {
-        setError("Произошла ошибка при отправке запроса");
+        setError("An error occurred while sending the request");
       }
     } finally {
       setLoading(false);
@@ -87,7 +87,7 @@ const AuthPage: React.FC = () => {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1>{isLogin ? "Вход" : "Регистрация"}</h1>
+          <h1>{isLogin ? "Log in" : "Sign up"}</h1>
         </div>
 
         {error && <div className="notification error">{error}</div>}
@@ -96,7 +96,7 @@ const AuthPage: React.FC = () => {
           {!isLogin && (
             <div className="form-group">
               <label className="form-label" htmlFor="username">
-                Имя пользователя
+                Username
               </label>
               <input
                 id="username"
@@ -104,7 +104,7 @@ const AuthPage: React.FC = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="form-input"
-                placeholder="Введите имя пользователя"
+                placeholder="Enter username"
                 required
                 disabled={loading}
               />
@@ -120,7 +120,7 @@ const AuthPage: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="form-input"
-              placeholder="Введите ваш email"
+              placeholder="Enter your email"
               required
               disabled={loading}
             />
@@ -128,7 +128,7 @@ const AuthPage: React.FC = () => {
 
           <div className="form-group">
             <label className="form-label" htmlFor="password">
-              Пароль
+              Password
             </label>
             <input
               id="password"
@@ -136,7 +136,7 @@ const AuthPage: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="form-input"
-              placeholder="Введите пароль"
+              placeholder="Enter password"
               required
               disabled={loading}
             />
@@ -145,7 +145,7 @@ const AuthPage: React.FC = () => {
           {!isLogin && (
             <div className="form-group">
               <label className="form-label" htmlFor="confirmPassword">
-                Подтвердите пароль
+                Confirm password
               </label>
               <input
                 id="confirmPassword"
@@ -153,7 +153,7 @@ const AuthPage: React.FC = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="form-input"
-                placeholder="Повторите пароль"
+                placeholder="Repeat password"
                 required
                 disabled={loading}
               />
@@ -163,10 +163,10 @@ const AuthPage: React.FC = () => {
           <div className="form-group">
             <button type="submit" className="primary-button" disabled={loading}>
               {loading
-                ? "Загрузка..."
+                ? "Loading..."
                 : isLogin
-                ? "Войти"
-                : "Зарегистрироваться"}
+                ? "Log in"
+                : "Sign up"}
             </button>
           </div>
 
@@ -177,7 +177,7 @@ const AuthPage: React.FC = () => {
               className="secondary-button"
               disabled={loading}
             >
-              {isLogin ? "Создать аккаунт" : "Уже есть аккаунт? Войти"}
+              {isLogin ? "Create an account" : "Already have an account? Log in"}
             </button>
           </div>
         </form>

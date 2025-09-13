@@ -38,9 +38,9 @@ const MediaPage: React.FC = () => {
     } catch (err) {
       const axiosErr = err as AxiosError;
       if (axiosErr.response?.status === 401) {
-        setError("Необходима авторизация");
+        setError("Authorization required");
       } else {
-        setError("Не удалось загрузить медиафайлы");
+        setError("Failed to load media files");
       }
       console.error("Error fetching media:", err);
     }
@@ -61,14 +61,14 @@ const MediaPage: React.FC = () => {
 
     const fileList = rawFiles.filter((f) => {
       if (!allowedTypes.includes(f.type) || f.size > maxSize) {
-        console.warn("Пропускаем неподдерживаемый файл", f.name, f.type, f.size);
+        console.warn("Skipping unsupported file", f.name, f.type, f.size);
         return false;
       }
       return true;
     });
 
     if (fileList.length === 0) {
-      setError("Выберите JPG/PNG/WebP/GIF до 8 МБ");
+      setError("Select JPG/PNG/WebP/GIF up to 8 MB");
       return;
     }
 
@@ -124,7 +124,7 @@ const MediaPage: React.FC = () => {
 
       await fetchUserMedia();
     } catch (err) {
-      setError("Не удалось загрузить файлы");
+      setError("Failed to upload files");
       console.error("Error uploading files:", err);
     } finally {
       setUploading(false);
@@ -138,7 +138,7 @@ const MediaPage: React.FC = () => {
       await deleteMedia(photoId);
       await fetchUserMedia();
     } catch (err) {
-      setError("Не удалось удалить файл");
+      setError("Failed to delete file");
       console.error("Error deleting file:", err);
     }
   };
@@ -164,11 +164,11 @@ const MediaPage: React.FC = () => {
     if (selectedFiles.length === 0) return;
 
     confirmAlert({
-      title: "Подтверждение удаления",
-      message: `Вы уверены, что хотите удалить ${selectedFiles.length} выбранных файлов? Это действие нельзя отменить.`,
+      title: "Delete confirmation",
+      message: `Are you sure you want to delete ${selectedFiles.length} selected files? This action cannot be undone.`,
       buttons: [
         {
-          label: "Да, удалить",
+          label: "Yes, delete",
           onClick: async () => {
             try {
               for (const id of selectedFiles) {
@@ -177,11 +177,11 @@ const MediaPage: React.FC = () => {
               setSelectedFiles([]);
               setSelectMode(false);
             } catch (e) {
-              setError("Не удалось удалить некоторые файлы");
+              setError("Failed to delete some files");
             }
           },
         },
-        { label: "Отмена" },
+        { label: "Cancel" },
       ],
     });
   };
@@ -191,7 +191,7 @@ const MediaPage: React.FC = () => {
       <div>
         <NavBar />
         <div className="media-container">
-          <div className="error-message">Для доступа к медиа библиотеке необходимо авторизоваться</div>
+          <div className="error-message">You must be logged in to access the media library</div>
         </div>
       </div>
     );
@@ -200,7 +200,7 @@ const MediaPage: React.FC = () => {
   return (
     <div>
       <div className="media-container">
-        <h2>Медиа библиотека</h2>
+        <h2>Media library</h2>
 
         {error && <div className="error-message">{error}</div>}
 
@@ -217,7 +217,7 @@ const MediaPage: React.FC = () => {
             />
             <label htmlFor="file-upload" className="upload-button">
               <Upload size={18} />
-              {uploading ? `Загрузка ${uploadProgress}%` : "Загрузить фото"}
+              {uploading ? `Uploading ${uploadProgress}%` : "Upload photos"}
             </label>
             {uploading && (
               <div className="progress-container">
@@ -232,13 +232,13 @@ const MediaPage: React.FC = () => {
               onClick={toggleSelectMode}
             >
               {selectMode ? <X size={18} /> : <Check size={18} />}
-              {selectMode ? "Отменить выбор" : "Выбрать файлы"}
+              {selectMode ? "Cancel selection" : "Select files"}
             </button>
 
             {selectMode && (
               <>
                 <button className="select-all-button" onClick={selectAllFiles}>
-                  {selectedFiles.length === files.length ? "Снять выбор" : "Выбрать все"}
+                  {selectedFiles.length === files.length ? "Deselect all" : "Select all"}
                 </button>
                 <button
                   className="delete-selected-button"
@@ -246,7 +246,7 @@ const MediaPage: React.FC = () => {
                   disabled={selectedFiles.length === 0}
                 >
                   <Trash2 size={18} />
-                  Удалить выбранные ({selectedFiles.length})
+                  Delete selected ({selectedFiles.length})
                 </button>
               </>
             )}
@@ -270,13 +270,13 @@ const MediaPage: React.FC = () => {
                   }}
                   className="delete-button"
                 >
-                  Удалить
+                  Delete
                 </button>
               )}
             </div>
           ))}
           {files.length === 0 && !error && (
-            <div className="no-files-message">Нет загруженных файлов</div>
+            <div className="no-files-message">No files uploaded</div>
           )}
         </div>
       </div>

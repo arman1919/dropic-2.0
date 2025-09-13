@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Plus, User, Image as ImageIcon, LogOut } from 'lucide-react';
 import '../../styles/components/NavBar.css';
-import dropicLogo from '../../..//public/images/dropic-logo.png';
 
 const NavBar = () => {
   const router = useRouter();
@@ -40,7 +39,7 @@ const NavBar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link href="/" className="navbar-brand" onClick={() => setMenuOpen(false)}>
-          <Image src={dropicLogo} alt="Dropic Logo" className="navbar-logo" width={40} height={40} />
+          <Image src="/images/dropic-logo.png" alt="Dropic Logo" className="navbar-logo" width={40} height={40} />
           <span className="brand-text">Dropic</span>
         </Link>
 
@@ -54,19 +53,19 @@ const NavBar = () => {
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           <button onClick={createNewAlbum} className="navbar-button">
             <Plus size={18} />
-            Создать новый альбом
+            Create new album
           </button>
           <Link href="/profile" className={`navbar-button ${pathname === '/profile' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <User size={18} />
-            Мои альбомы
+            My albums
           </Link>
           <Link href="/media" className={`navbar-button ${pathname === '/media' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <ImageIcon size={18} />
-            Медиа библиотека
+            Media library
           </Link>
           <button onClick={handleLogout} className="navbar-button">
             <LogOut size={18} />
-            Выйти
+            Log out
           </button>
         </div>
       </div>

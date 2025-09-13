@@ -4,13 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import '../styles/pages/Home.css';
-import dropicLogo from '../../public/images/dropic-logo.png';
-import demoImage1 from '../../public/images/demo/demo-image-1.jpg';
-import demoImage2 from '../../public/images/demo/demo-image-2.jpg';
-import demoImage3 from '../../public/images/demo/demo-image-3.jpg';
-import demoImage4 from '../../public/images/demo/demo-image-4.jpg';
-import demoImage5 from '../../public/images/demo/demo-image-5.jpg';
-import demoImage6 from '../../public/images/demo/demo-image-6.jpg';
 
 const Home = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,12 +11,12 @@ const Home = () => {
   const router = useRouter();
 
   const demoImages = [
-    demoImage1,
-    demoImage2,
-    demoImage3,
-    demoImage4,
-    demoImage5,
-    demoImage6
+    '/images/demo/demo-image-1.jpg',
+    '/images/demo/demo-image-2.jpg',
+    '/images/demo/demo-image-3.jpg',
+    '/images/demo/demo-image-4.jpg',
+    '/images/demo/demo-image-5.jpg',
+    '/images/demo/demo-image-6.jpg'
   ];
 
   useEffect(() => {
@@ -77,18 +70,18 @@ const Home = () => {
       <header className="header">
         <nav className="nav">
           <div className="brand-container">
-            <Image src={dropicLogo} alt="Dropic Logo" className="logo-image" width={40} height={40} />
+            <Image src="/images/dropic-logo.png" alt="Dropic Logo" className="logo-image" width={40} height={40} />
             <span className="brand-text">Dropic</span>
           </div>
           <div className="nav-buttons">
             {isLoggedIn ? (
-              <a href="/profile" className="btn btn-outline">Мои альбомы</a>
+              <a href="/profile" className="btn btn-outline">My albums</a>
             ) : (
               <button
                 onClick={() => router.push('/auth')}
                 className="btn btn-primary"
               >
-                Войти
+                Log in
               </button>
             )}
           </div>
@@ -97,69 +90,69 @@ const Home = () => {
 
       <section className="hero">
         <div className="hero-content">
-          <h1>Создавайте магические фотоальбомы</h1>
-          <p>Превратите ваши воспоминания в красивые цифровые альбомы и делитесь ими с друзьями и близкими</p>
+          <h1>Create magical photo albums</h1>
+          <p>Turn your memories into beautiful digital albums and share them with friends and family</p>
           <div className="hero-cta">
             {isLoggedIn ? (
               <button
                 onClick={() => router.push('/albums/create')}
                 className="btn btn-primary btn-hero"
               >
-                Создать новый альбом
+                Create new album
               </button>
             ) : (
               <button
                 onClick={() => router.push('/auth')}
                 className="btn btn-primary btn-hero"
               >
-                Начать бесплатно
+                Get started free
               </button>
             )}
-            <a href="#demo" className="btn btn-secondary btn-hero">Посмотреть примеры</a>
+            <a href="#demo" className="btn btn-secondary btn-hero">See examples</a>
           </div>
         </div>
       </section>
 
       <section className="features">
         <div className="container">
-          <h2 className="section-title">Почему выбирают Dropic?</h2>
-          <p className="section-subtitle">Мощные инструменты для создания незабываемых фотоальбомов</p>
+          <h2 className="section-title">Why choose Dropic?</h2>
+          <p className="section-subtitle">Powerful tools to create unforgettable photo albums</p>
           
           <div className="features-grid">
             <div className="feature-card">
               <div className="feature-icon">📸</div>
-              <h3>Простое создание</h3>
-              <p>Загружайте фото одним кликом и создавайте альбомы за считанные минуты</p>
+              <h3>Easy creation</h3>
+              <p>Upload photos in one click and make albums in minutes</p>
             </div>
             
             <div className="feature-card">
               <div className="feature-icon">🎨</div>
-              <h3>Красивые темы</h3>
-              <p>Выбирайте из множества профессиональных шаблонов и настраивайте под себя</p>
+              <h3>Beautiful themes</h3>
+              <p>Choose from many professional templates and customize them</p>
             </div>
             
             <div className="feature-card">
               <div className="feature-icon">👥</div>
-              <h3>Совместная работа</h3>
-              <p>Приглашайте друзей добавлять фото и создавайте альбомы вместе</p>
+              <h3>Collaboration</h3>
+              <p>Invite friends to add photos and build albums together</p>
             </div>
             
             <div className="feature-card">
               <div className="feature-icon">🔗</div>
-              <h3>Легкий доступ</h3>
-              <p>Делитесь альбомами через ссылку или встраивайте на свой сайт</p>
+              <h3>Easy access</h3>
+              <p>Share albums via link or embed them on your website</p>
             </div>
             
             <div className="feature-card">
               <div className="feature-icon">☁️</div>
-              <h3>Облачное хранение</h3>
-              <p>Ваши фото надежно сохранены и доступны с любого устройства</p>
+              <h3>Cloud storage</h3>
+              <p>Your photos are safely stored and accessible from any device</p>
             </div>
             
             <div className="feature-card">
               <div className="feature-icon">⚡</div>
-              <h3>Быстрая загрузка</h3>
-              <p>Оптимизированные альбомы загружаются мгновенно на любой скорости</p>
+              <h3>Fast loading</h3>
+              <p>Optimized albums load instantly at any speed</p>
             </div>
           </div>
         </div>
@@ -167,12 +160,12 @@ const Home = () => {
 
       <section id="demo" className="demo">
         <div className="album-container">
-          <h1 className="section-title">Примеры альбомов</h1>          
+          <h1 className="section-title">Album examples</h1>          
           <div className="photo-viewer">
             <div className="photo-container">
               <Image 
                 src={demoImages[currentPage]} 
-                alt={`Демо изображение ${currentPage + 1}`} 
+                alt={`Demo image ${currentPage + 1}`} 
                 className="demo-image"
                 layout="fill"
                 objectFit="contain"
@@ -202,7 +195,7 @@ const Home = () => {
               >
                 <Image 
                   src={image} 
-                  alt={`Миниатюра ${index + 1}`} 
+                  alt={`Thumbnail ${index + 1}`} 
                   className="thumbnail-image"
                   width={80}
                   height={60}
@@ -216,35 +209,35 @@ const Home = () => {
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>Продукт</h3>
-            <a href="#features">Возможности</a>
-            <a href="#pricing">Тарифы</a>
-            <a href="#demo">Примеры</a>
+            <h3>Product</h3>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#demo">Examples</a>
             <a href="#api">API</a>
           </div>
           <div className="footer-section">
-            <h3>Компания</h3>
-            <a href="#about">О нас</a>
-            <a href="#blog">Блог</a>
-            <a href="#careers">Карьера</a>
-            <a href="#contact">Контакты</a>
+            <h3>Company</h3>
+            <a href="#about">About</a>
+            <a href="#blog">Blog</a>
+            <a href="#careers">Careers</a>
+            <a href="#contact">Contact</a>
           </div>
           <div className="footer-section">
-            <h3>Поддержка</h3>
-            <a href="#help">Справка</a>
-            <a href="#docs">Документация</a>
-            <a href="#community">Сообщество</a>
-            <a href="#status">Статус</a>
+            <h3>Support</h3>
+            <a href="#help">Help</a>
+            <a href="#docs">Documentation</a>
+            <a href="#community">Community</a>
+            <a href="#status">Status</a>
           </div>
           <div className="footer-section">
-            <h3>Правовая информация</h3>
-            <a href="#privacy">Конфиденциальность</a>
-            <a href="#terms">Условия использования</a>
+            <h3>Legal</h3>
+            <a href="#privacy">Privacy</a>
+            <a href="#terms">Terms of use</a>
             <a href="#cookies">Cookies</a>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} Dropic. Все права защищены.</p>
+          <p>&copy; {new Date().getFullYear()} Dropic. All rights reserved.</p>
         </div>
       </footer>
     </>

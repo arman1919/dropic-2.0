@@ -50,13 +50,13 @@ const UserProfile = () => {
 
         setAlbums(fetchedAlbums);
       } catch (err) {
-        console.error('Ошибка при загрузке альбомов:', err);
+        console.error('Error loading albums:', err);
         const axiosError = err as AxiosError;
         if (axiosError.response?.status === 401) {
           localStorage.removeItem('userToken');
           router.push('/auth');
         } else {
-          setError('Не удалось загрузить ваши альбомы. Попробуйте обновить страницу.');
+          setError('Failed to load your albums. Please try refreshing the page.');
         }
       } finally {
         setLoading(false);
@@ -105,7 +105,7 @@ const UserProfile = () => {
       const deletePromises = albumIds.map(albumId => {
         const deleteToken = localStorage.getItem(`album_delete_token_${albumId}`);
         if (!deleteToken) {
-            throw new Error(`Токен для удаления альбома ${albumId} не найден.`);
+            throw new Error(`Delete token for album ${albumId} not found.`);
         }
         return api.delete(`/api/albums/${albumId}`, {
             headers: { Authorization: `Bearer ${userToken}` },
@@ -125,9 +125,9 @@ const UserProfile = () => {
         setSelectMode(false);
       }
     } catch (err) {
-      console.error('Ошибка при удалении альбомов:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Убедитесь, что у вас есть права на это действие.';
-      setError(`Не удалось удалить выбранные альбомы. ${errorMessage}`);
+      console.error('Error deleting albums:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Make sure you have permission for this action.';
+      setError(`Failed to delete selected albums. ${errorMessage}`);
     }
   };
   
@@ -137,19 +137,19 @@ const UserProfile = () => {
     if (albumIds.length === 0) return;
 
     const message = single
-      ? 'Вы уверены, что хотите удалить этот альбом?'
-      : `Вы уверены, что хотите удалить ${albumIds.length} выбранных альбомов?`;
+      ? 'Are you sure you want to delete this album?'
+      : `Are you sure you want to delete ${albumIds.length} selected albums?`;
 
     confirmAlert({
-      title: 'Подтверждение удаления',
+      title: 'Delete confirmation',
       message,
       buttons: [
         {
-          label: 'Да, удалить',
+          label: 'Yes, delete',
           onClick: () => handleDelete(albumIds)
         },
         {
-          label: 'Отмена'
+          label: 'Cancel'
         }
       ]
     });
@@ -172,7 +172,7 @@ const UserProfile = () => {
     return (
       <div className="loading-container" suppressHydrationWarning={true}>
         <div className="loading-spinner" suppressHydrationWarning={true}></div>
-        <p className="loading-text">Загрузка альбомов...</p>
+        <p className="loading-text">Loading albums...</p>
       </div>
     );
   }
@@ -181,7 +181,7 @@ const UserProfile = () => {
     return (
       <div className="error-container" suppressHydrationWarning={true}>
         <p className="error-message">{error}</p>
-        <button onClick={() => window.location.reload()} className="btn btn-primary">Попробовать снова</button>
+        <button onClick={() => window.location.reload()} className="btn btn-primary">Try again</button>
       </div>
     );
   }
@@ -189,14 +189,14 @@ const UserProfile = () => {
   return (
     <div className="content-container" suppressHydrationWarning={true}>
       <div className="content-header">
-        <h1 className="page-title">Мои Альбомы</h1>
+        <h1 className="page-title">My Albums</h1>
         
         <div className="btn-group">
           <button
             onClick={toggleSelectMode}
             className={`btn ${selectMode ? 'btn-primary' : 'btn-secondary'}`}
           >
-            {selectMode ? 'Завершить выбор' : 'Выбрать альбомы'}
+            {selectMode ? 'Finish selection' : 'Select albums'}
           </button>
           
           {selectMode && (
@@ -205,7 +205,7 @@ const UserProfile = () => {
                 onClick={selectAllAlbums}
                 className="btn btn-secondary"
               >
-                {selectedAlbums.length === albums.length ? 'Снять выделение' : 'Выбрать все'}
+                {selectedAlbums.length === albums.length ? 'Deselect all' : 'Select all'}
               </button>
               
               <button
@@ -213,7 +213,7 @@ const UserProfile = () => {
                 disabled={selectedAlbums.length === 0}
                 className="btn btn-danger"
               >
-                Удалить выбранные ({selectedAlbums.length})
+                Delete selected ({selectedAlbums.length})
               </button>
             </>
           )}
@@ -233,12 +233,12 @@ const UserProfile = () => {
             >
               {album.photoCount > 0 && (
                 <div className="album-badge album-badge-photos">
-                  {album.photoCount} фото
+                  {album.photoCount} photos
                 </div>
               )}
               
               <div className="album-card-header">
-                <h2 className="album-card-title">{album.title || 'Без названия'}</h2>
+                <h2 className="album-card-title">{album.title || 'Untitled'}</h2>
                 <div className="album-card-meta">
                   <span>
                     <i className="far fa-calendar"></i> 
@@ -254,14 +254,14 @@ const UserProfile = () => {
                     className="btn btn-primary btn-sm"
                     disabled={selectMode}
                   >
-                    Управление
+                    Manage
                   </button>
                   <button
                     onClick={(e) => handleButtonClick(e, () => router.push(`/albums/${album.albumId}/public`))}
                     className="btn btn-success btn-sm"
                     disabled={selectMode}
                   >
-                    Просмотр
+                    View
                   </button>
                 </div>
               </div>
@@ -272,7 +272,7 @@ const UserProfile = () => {
                     onClick={(e) => confirmAndDelete(e, [album.albumId], true)}
                     className="btn btn-danger btn-sm"
                   >
-                    Удалить
+                    Delete
                   </button>
                 </div>
               )}
@@ -291,8 +291,8 @@ const UserProfile = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </div>
-            <h3 className="create-album-title">Создать новый альбом</h3>
-            <p className="create-album-text">Добавьте новый альбом для ваших фотографий</p>
+            <h3 className="create-album-title">Create a new album</h3>
+            <p className="create-album-text">Add a new album for your photos</p>
           </div>
         </div>
       </div>

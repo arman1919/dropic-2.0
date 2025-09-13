@@ -25,7 +25,7 @@ const PublicLinkSection: React.FC<Props> = ({ albumId }) => {
   return (
     <div className="admin-section" style={{ marginTop: '2rem' }}>
       <div className="public-link-container">
-        <h3>Публичная ссылка на альбом:</h3>
+        <h3>Public link to the album:</h3>
         <div className="link-box" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <input
             type="text"
@@ -36,10 +36,10 @@ const PublicLinkSection: React.FC<Props> = ({ albumId }) => {
           />
           <div className='link-actions-container'>
             <button onClick={() => window.open(publicLink, '_blank')} className="view-button primary-button">
-              Посмотреть
+              View
             </button>
             <button onClick={copyToClipboard} className="copy-button secondary-button">
-              Копировать
+              Copy
             </button>
           </div>
 
@@ -48,7 +48,7 @@ const PublicLinkSection: React.FC<Props> = ({ albumId }) => {
         <QrCodeSection publicLink={publicLink} />
       </div>
       {showToast && (
-        <Toast message="Ссылка скопирована в буфер обмена!" onClose={() => setShowToast(false)} />
+        <Toast message="Link copied to clipboard!" onClose={() => setShowToast(false)} />
       )}
     </div>
   );

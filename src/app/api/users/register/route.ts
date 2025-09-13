@@ -9,13 +9,13 @@ export async function POST(req: NextRequest) {
   try {
     const { username, email, password } = await req.json();
     if (!username || !email || !password)
-      return NextResponse.json({ message: 'Не все поля заполнены' }, { status: 400 });
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
 
     await connectDB();
 
     let user = await User.findOne({ $or: [{ email }, { username }] });
     if (user)
-      return NextResponse.json({ message: 'Пользователь уже существует' }, { status: 409 });
+      return NextResponse.json({ message: 'User already exists' }, { status: 409 });
 
     user = new User({ userId: uuidv4(), username, email });
 
@@ -32,6 +32,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, token }, { status: 201 });
   } catch (err: any) {
     console.error('Register error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }

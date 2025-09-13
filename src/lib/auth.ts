@@ -10,17 +10,17 @@ interface DecodedToken {
 }
 
 /**
- * Получает userId из JWT в заголовке Authorization.
- * Бросает Response с 401, если токен отсутствует или недействителен.
+ * Gets userId from JWT in Authorization header.
+ * Throws Response with 401 if token is missing or invalid.
  */
 export function requireAuth(req: NextRequest): { userId: string } {
   const authHeader = req.headers.get('authorization');
   if (!authHeader) {
-    throw new NextResponse(JSON.stringify({ message: 'Нет токена' }), { status: 401 });
+    throw new NextResponse(JSON.stringify({ message: 'No token provided' }), { status: 401 });
   }
   const token = authHeader.replace('Bearer', '').trim();
   if (!token) {
-    throw new NextResponse(JSON.stringify({ message: 'Неверный токен' }), { status: 401 });
+    throw new NextResponse(JSON.stringify({ message: 'Invalid token' }), { status: 401 });
   }
   try {
     const secret = process.env.JWT_SECRET;
@@ -31,6 +31,6 @@ export function requireAuth(req: NextRequest): { userId: string } {
     return { userId: decoded.user.userId };
   } catch (err) {
     console.error('JWT verify error', err);
-    throw new NextResponse(JSON.stringify({ message: 'Неверный токен' }), { status: 401 });
+    throw new NextResponse(JSON.stringify({ message: 'Invalid token' }), { status: 401 });
   }
 }

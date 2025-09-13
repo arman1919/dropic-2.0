@@ -26,22 +26,22 @@ const QrCodeSection: React.FC<Props> = ({ publicLink }) => {
       link.click();
       document.body.removeChild(link);
       
-      // Освобождаем память
+      // Free up memory
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Ошибка при скачивании QR-кода:', error);
+      console.error('Error downloading QR code:', error);
     }
   };
 
   return (
     <div className="qr-code-section">
-      <h4>QR-код</h4>
+      <h4>QR code</h4>
       <div className="qr-code-container">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={qrUrl} alt="QR code" width={180} height={180} />
         <button className="download-qr-button" onClick={downloadQR}>
           <Download size={16} />
-          Скачать QR-код
+          Download QR code
         </button>
       </div>
     </div>

@@ -31,14 +31,14 @@ const CreateAlbumPage = () => {
         
         router.push(`/albums/${albumId}`);
       } else {
-        setError('Ошибка при создании альбома: не получен ID альбома');
+        setError('Error creating album: album ID not received');
       }
     } catch (err: any) {
       if (err.response?.status === 401) {
-        setError('Ошибка авторизации. Пожалуйста, войдите в систему заново');
+        setError('Authorization error. Please log in again');
         // router.push('/auth');
       } else {
-        setError(err.response?.data?.message || 'Не удалось создать альбом');
+        setError(err.response?.data?.message || 'Failed to create album');
       }
     } finally {
       setLoading(false);
@@ -48,7 +48,7 @@ const CreateAlbumPage = () => {
   return (
     <div className="form-container">
       <div className="page-header">
-        <h1>Создание нового альбома</h1>
+        <h1>Create a new album</h1>
       </div>
 
       {error && (
@@ -60,7 +60,7 @@ const CreateAlbumPage = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label" htmlFor="albumName">
-            Название альбома
+            Album title
           </label>
           <input
             id="albumName"
@@ -68,7 +68,7 @@ const CreateAlbumPage = () => {
             value={albumName}
             onChange={(e) => setAlbumName(e.target.value)}
             className="form-input"
-            placeholder="Введите название альбома"
+            placeholder="Enter album title"
             required
             disabled={loading}
           />
@@ -80,7 +80,7 @@ const CreateAlbumPage = () => {
             className="primary-button w-full"
             disabled={loading}
           >
-            {loading ? 'Создание...' : 'Создать альбом'}
+            {loading ? 'Creating...' : 'Create album'}
           </button>
         </div>
 
@@ -91,7 +91,7 @@ const CreateAlbumPage = () => {
             className="secondary-button"
             disabled={loading}
           >
-            Отмена
+            Cancel
           </button>
         </div>
       </form>

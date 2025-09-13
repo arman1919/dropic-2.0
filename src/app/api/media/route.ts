@@ -14,6 +14,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ media: user.media || [] });
   } catch (err: any) {
     console.error('Media list error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }

@@ -1,8 +1,7 @@
 import api from '../../../../lib/api/client';
 
-// Функция для корректного формирования URL изображения
 export const getImageUrl = (image, albumId) => {
-  if (!image) return 'https://via.placeholder.com/400x300?text=Нет+изображения';
+  if (!image) return 'https://via.placeholder.com/400x300?text=No+image';
   
   // Базовый URL сервера
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
@@ -30,7 +29,7 @@ export const getImageUrl = (image, albumId) => {
   }
   
   // Если ничего не подошло
-  return 'https://via.placeholder.com/400x300?text=Неизвестный+формат';
+  return 'https://via.placeholder.com/400x300?text=Unknown+format';
 };
 
 // Функция для генерации QR-кода
@@ -39,8 +38,8 @@ export const generateQrCode = async (link) => {
     const response = await api.get(`/api/qr/generate?link=${encodeURIComponent(link)}`);
     return response.data.qrImage;
   } catch (err) {
-    console.error('Ошибка при генерации QR-кода:', err);
-    throw new Error('Не удалось сгенерировать QR-код');
+    console.error('Error generating QR code:', err);
+    throw new Error('Failed to generate QR code');
   }
 };
 

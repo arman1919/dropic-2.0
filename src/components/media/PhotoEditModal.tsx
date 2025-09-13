@@ -50,13 +50,13 @@ const PhotoEditModal: React.FC<PhotoEditModalProps> = ({ isOpen, onClose, photo,
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
-          <h2>Редактировать фото</h2>
+          <h2>Edit photo</h2>
           <button onClick={onClose} className={styles.closeButton}>&times;</button>
         </div>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label>
-              Описание:
+              Description:
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -70,12 +70,12 @@ const PhotoEditModal: React.FC<PhotoEditModalProps> = ({ isOpen, onClose, photo,
                 checked={descriptionHidden}
                 onChange={(e) => setDescriptionHidden(e.target.checked)}
               />
-              Скрыть описание
+              Hide description
             </label>
           </div>
           <div className={styles.formGroup}>
             <label>
-              Дата:
+              Date:
               <input
                 type="date"
                 value={date}
@@ -89,15 +89,15 @@ const PhotoEditModal: React.FC<PhotoEditModalProps> = ({ isOpen, onClose, photo,
                 checked={dateHidden}
                 onChange={(e) => setDateHidden(e.target.checked)}
               />
-              Скрыть дату
+              Hide date
             </label>
           </div>
           <div className={styles.buttonGroup}>
             <button type="button" onClick={onClose} className={styles.cancelButton}>
-              Отмена
+              Cancel
             </button>
             <button type="submit" className={styles.saveButton}>
-              Сохранить
+              Save
             </button>
           </div>
         </form>
@@ -106,4 +106,4 @@ const PhotoEditModal: React.FC<PhotoEditModalProps> = ({ isOpen, onClose, photo,
   );
 };
 
-export default PhotoEditModal; 
+export default PhotoEditModal;

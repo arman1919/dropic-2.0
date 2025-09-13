@@ -169,7 +169,7 @@ export default function PublicAlbumPage() {
         }
         setError(null);
       } catch (err) {
-        setError('Не удалось загрузить альбом. Пожалуйста, попробуйте позже.');
+        setError('Failed to load album. Please try again later.');
         setImages([]);
       } finally {
         setLoading(false);
@@ -253,7 +253,7 @@ export default function PublicAlbumPage() {
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('ru-RU', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -265,7 +265,7 @@ export default function PublicAlbumPage() {
     return (
       <div className={styles.albumContainer}>
         <div className={styles.loadingSpinner}></div>
-        <p className={styles.loadingText}>Загрузка альбома...</p>
+        <p className={styles.loadingText}>Loading album...</p>
       </div>
     );
   }
@@ -275,7 +275,7 @@ export default function PublicAlbumPage() {
         <div className={styles.errorMessage}>
           <p>{error}</p>
           <button onClick={() => window.location.reload()} className={styles.retryButton}>
-            Попробовать снова
+            Try again
           </button>
         </div>
       </div>
@@ -286,7 +286,7 @@ export default function PublicAlbumPage() {
       <div className={styles.albumContainer}>
         <h2>{albumTitle}</h2>
         <div className={styles.emptyAlbumMessage}>
-          <p>В этом альбоме пока нет фотографий.</p>
+          <p>This album is empty.</p>
         </div>
       </div>
     );
@@ -299,7 +299,7 @@ export default function PublicAlbumPage() {
           <h2>{albumTitle}</h2>
           {isOwner && (
             <button onClick={handleEditAlbum} className={styles.editButton}>
-              Редактировать
+              Edit
             </button>
           )}
         </div>
@@ -319,7 +319,7 @@ export default function PublicAlbumPage() {
                 <CldImage
                   ref={imageRef}
                   src={images[currentImageIndex].photoId}
-                  alt={`Фото ${currentImageIndex + 1}`}
+                  alt={`Photo ${currentImageIndex + 1}`}
                   className={styles.currentImage}
                   onLoad={handleImageLoad}
                   width="1200"
@@ -353,7 +353,7 @@ export default function PublicAlbumPage() {
                 }`}>
                   <CldImage
                     src={images[nextIndex].photoId}
-                    alt={`Фото ${nextIndex + 1}`}
+                    alt={`Photo ${nextIndex + 1}`}
                     className={styles.currentImage}
                     width="1200"
                     height="800"
@@ -376,7 +376,7 @@ export default function PublicAlbumPage() {
               <button
                 className={`${styles.navArrow} ${styles.prevArrow}`}
                 onClick={prevImage}
-                aria-label="Предыдущее фото"
+                aria-label="Previous photo"
                 disabled={isAnimating}
               >
                 &#10094;
@@ -384,7 +384,7 @@ export default function PublicAlbumPage() {
               <button
                 className={`${styles.navArrow} ${styles.nextArrow}`}
                 onClick={nextImage}
-                aria-label="Следующее фото"
+                aria-label="Next photo"
                 disabled={isAnimating}
               >
                 &#10095;
@@ -393,7 +393,7 @@ export default function PublicAlbumPage() {
               <button
                 className={styles.fullscreenButton}
                 onClick={toggleFullscreen}
-                aria-label="Полноэкранный режим"
+                aria-label="Fullscreen mode"
               >
                 {isFullscreen ? '⤓' : '⤢'}
               </button>
@@ -411,7 +411,7 @@ export default function PublicAlbumPage() {
                 <button
                   className={styles.pauseButton}
                   onClick={() => setIsPaused(!isPaused)}
-                  aria-label={isPaused ? "Продолжить" : "Пауза"}
+                  aria-label={isPaused ? "Resume" : "Pause"}
                 >
                   <span>{isPaused ? '▶' : '⏸'}</span>
                 </button>
@@ -425,7 +425,7 @@ export default function PublicAlbumPage() {
                     key={index}
                     className={`${styles.dot} ${index === currentImageIndex ? styles.activeDot : ''}`}
                     onClick={() => goToImage(index)}
-                    aria-label={`Перейти к фото ${index + 1}`}
+                    aria-label={`Go to photo ${index + 1}`}
                   />
                 ))}
               </div>
@@ -441,7 +441,7 @@ export default function PublicAlbumPage() {
                     <CldImage
                       key={index}
                       src={image.photoId}
-                      alt={`Миниатюра ${index + 1}`}
+                      alt={`Thumbnail ${index + 1}`}
                       className={`${styles.thumbnail} ${index === currentImageIndex ? styles.activeThumbnail : ''}`}
                       onClick={() => goToImage(index)}
                       width="100"
@@ -463,7 +463,7 @@ export default function PublicAlbumPage() {
         )}
         {images.length === 0 && !loading && !error && (
           <div className={styles.emptyAlbumMessage}>
-            <p>В этом альбоме пока нет фотографий.</p>
+            <p>This album is empty.</p>
           </div>
         )}
       </div>

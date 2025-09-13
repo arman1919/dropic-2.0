@@ -24,20 +24,20 @@ const GalleryControls: React.FC<Props> = ({
   return (
     <div className="gallery-controls">
       <button onClick={toggleSelectMode} className="control-button mr-4">
-        {selectMode ? 'Выйти из режима выбора' : 'Выбрать несколько'}
+        {selectMode ? 'Exit selection mode' : 'Select multiple'}
       </button>
 
       {selectMode && (
         <>
           <button onClick={selectAllImages} className="control-button mr-4">
-            {selectedCount === imagesCount ? 'Снять выбор' : 'Выбрать все'}
+            {selectedCount === imagesCount ? 'Deselect all' : 'Select all'}
           </button>
           <button
             onClick={deleteSelectedImages}
             className="delete-button"
             disabled={selectedCount === 0}
           >
-            Удалить выбранные ({selectedCount})
+            Delete selected ({selectedCount})
           </button>
         </>
       )}

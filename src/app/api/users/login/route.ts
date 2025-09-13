@@ -12,18 +12,18 @@ export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
     if (!email || !password) {
-      return NextResponse.json({ message: 'Не все поля заполнены' }, { status: 400 });
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
 
     await connectDB();
     const user = await User.findOne({ email });
     if (!user) {
-      return NextResponse.json({ message: 'Неверные учетные данные' }, { status: 400 });
+      return NextResponse.json({ message: 'Invalid credentials' }, { status: 400 });
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-      return NextResponse.json({ message: 'Неверные учетные данные' }, { status: 400 });
+      return NextResponse.json({ message: 'Invalid credentials' }, { status: 400 });
     }
 
     const payload = { user: { userId: user.userId } };
@@ -34,6 +34,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ token });
   } catch (err: any) {
     console.error('Login error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }

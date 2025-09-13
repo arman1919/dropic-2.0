@@ -41,6 +41,6 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (err: any) {
     console.error('Media DELETE error:', err);
-    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }

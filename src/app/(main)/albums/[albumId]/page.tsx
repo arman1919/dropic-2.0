@@ -76,7 +76,7 @@ const AlbumEditPage = () => {
       if (err.response?.status === 401) {
         router.push('/auth');
       } else {
-        setError(err.response?.data?.message || 'Не удалось загрузить данные');
+        setError(err.response?.data?.message || 'Failed to load data');
       }
     } finally {
       setLoading(false);
@@ -181,16 +181,16 @@ const AlbumEditPage = () => {
       setAlbumPhotos(albumData.photos);
       setMedia(albumData.photos);
       setSelectedIds(new Set(albumData.photos.map((p) => p.photoId)));
-      setSuccess('Изменения успешно сохранены');
+      setSuccess('Changes saved successfully');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Не удалось сохранить изменения');
+      setError(err.response?.data?.message || 'Failed to save changes');
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <div className="loading">Загрузка...</div>;
+  if (loading) return <div className="loading">Loading...</div>;
 
   if (error) {
     return (
@@ -205,10 +205,10 @@ const AlbumEditPage = () => {
     <div>
       <div className="album-edit-container">
         {success && <div className="notification success">{success}</div>}
-        <h2 className="section-title">Редактирование альбома</h2>
+        <h2 className="section-title">Edit album</h2>
 
         <div className="form-group">
-          <h3 className="section-subtitle">Название альбома</h3>
+          <h3 className="section-subtitle">Album title</h3>
           {isEditingTitle ? (
             <input
               id="title"
@@ -225,20 +225,20 @@ const AlbumEditPage = () => {
               onClick={() => setIsEditingTitle(true)}
               style={{ cursor: 'pointer', minHeight: 32, color: title ? undefined : '#aaa' }}
             >
-              {title || 'Без названия'}
+              {title || 'Untitled'}
             </div>
           )}
         </div>
 
         <div className="form-group">
-          <h3 className="section-subtitle">Описание альбома</h3>
+          <h3 className="section-subtitle">Album description</h3>
           {isEditingDescription ? (
             <textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="form-input edit-description-input"
-              placeholder="Введите описание альбома..."
+              placeholder="Enter album description..."
               rows={3}
               onBlur={() => setIsEditingDescription(false)}
               autoFocus
@@ -249,32 +249,32 @@ const AlbumEditPage = () => {
               onClick={() => setIsEditingDescription(true)}
               style={{ cursor: 'pointer', minHeight: 32, color: description ? undefined : '#aaa' }}
             >
-              {description || 'Добавить описание'}
+              {description || 'Add description'}
             </div>
           )}
         </div>
 
         <div className="form-group">
-          <h3 className="section-subtitle">Публичная ссылка на альбом:</h3>
+          <h3 className="section-subtitle">Public link to the album:</h3>
           <PublicLinkSection albumId={albumId} />
         </div>
 
-        <h3 className="section-subtitle">Выбранные фотографии</h3>
+        <h3 className="section-subtitle">Selected photos</h3>
 
         <div className="add-images-actions" style={{ marginTop: '1rem' }}>
           <GalleryControls
-              imagesCount={media.length}
-              selectMode={selectMode}
-              selectedCount={selectedForDelete.size}
-              toggleSelectMode={toggleSelectMode}
-              selectAllImages={selectAllImages}
-              deleteSelectedImages={deleteSelectedImages}
-            />
+            imagesCount={media.length}
+            selectMode={selectMode}
+            selectedCount={selectedForDelete.size}
+            toggleSelectMode={toggleSelectMode}
+            selectAllImages={selectAllImages}
+            deleteSelectedImages={deleteSelectedImages}
+          />
 
           <div className="actions" style={{ marginTop: '1rem' }}>
             <button className="add-images-button" onClick={() => setSelectorOpen(true)}>
               <Plus size={18} />
-              Добавить изображения
+              Add images
             </button>
           </div>
 
@@ -326,7 +326,7 @@ const AlbumEditPage = () => {
                     e.stopPropagation();
                     handleEditPhoto(photo);
                   }}
-                  title="Редактировать"
+                  title="Edit"
                   style={{ position: 'absolute', top: 8, left: 8, zIndex: 2, opacity: 0, pointerEvents: 'none', transition: 'opacity 0.2s, transform 0.2s', transform: 'scale(0.9)' }}
                 >
                   <Edit3 size={16} />
@@ -344,7 +344,7 @@ const AlbumEditPage = () => {
                       setAlbumPhotos((prev) => prev.filter((p) => p.photoId !== photo.photoId));
                     }}
                   >
-                    Удалить
+                    Delete
                   </button>
                 )}
               </div>
@@ -355,11 +355,11 @@ const AlbumEditPage = () => {
         <div className="edit-actions">
           <button className="primary-button" onClick={handleSave} disabled={saving}>
             <Save size={18} />
-            {saving ? 'Сохранение...' : 'Сохранить'}
+            {saving ? 'Saving...' : 'Save'}
           </button>
           <button className="secondary-button" onClick={() => router.push('/profile')} disabled={saving}>
             <X size={18} />
-            Отмена
+            Cancel
           </button>
         </div>
         <MediaSelector
